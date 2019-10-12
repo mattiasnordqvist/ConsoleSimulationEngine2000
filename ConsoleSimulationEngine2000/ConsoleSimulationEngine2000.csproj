@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>ConsoleSimulationEngine2000</AssemblyName>
+    <RootNamespace>ConsoleSimulationEngine2000</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ArtisticPastelPainter" Version="0.7.0" />
+  </ItemGroup>
+
+</Project>
