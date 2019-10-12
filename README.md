@@ -26,7 +26,7 @@ Create a .Net Core 3 Console App. Smack this into your Main method:
 
         public override void PassTime(int deltaTime)
         {
-            dateTime.AddMilliseconds(deltaTime);
+            dateTime = dateTime.AddMilliseconds(deltaTime);
             log.Log("A second has passed");
             clockDisplay.Value = dateTime.ToString("HH:mm");
         }
