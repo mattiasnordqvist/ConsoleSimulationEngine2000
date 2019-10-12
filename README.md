@@ -32,3 +32,5 @@ Create a .Net Core 3 Console App. Smack this into your Main method:
         }
     }
 ```
+`Display`s are used to render things on screen. All `Display`s listed in the `Displays` property will be rendered every second.
+`Input` (from base class) can be used to query input. It also has a list of words available for auto-completion.
