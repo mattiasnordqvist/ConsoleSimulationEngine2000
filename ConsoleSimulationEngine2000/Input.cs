@@ -7,7 +7,7 @@ namespace ConsoleSimulationEngine2000
 {
     public class Input
     {
-        internal string LastInput { get; set; }
+        internal Queue<string> LastInput { get; } = new Queue<string>();
         internal string CurrentInput { get; set; } = "";
         internal string Suggestion { get; set; } = null;
 
@@ -25,75 +25,78 @@ namespace ConsoleSimulationEngine2000
         }
 
         /// <summary>
-        /// Returns the last input and allows for new input.
+        /// Returns the the first input in the queue, if any. Throws exception if there is no input to consume.
         /// </summary>
         /// <returns></returns>
         public string Consume()
         {
-            var returnValue = LastInput;
-            LastInput = null;
-            return returnValue;
+            if (HasInput)
+            {
+                var returnValue = LastInput.Dequeue();
+                return returnValue;
+            }
+            else
+            {
+                throw new InvalidOperationException("There's no input to consume");
+            }
         }
 
         /// <summary>
-        /// True if there is any input
+        /// True if there is any input to consume
         /// </summary>
         /// <returns></returns>
-        public bool HasInput => LastInput != null;
+        public bool HasInput => LastInput.TryPeek(out _);
 
         internal void KeyInputted(ConsoleKeyInfo key)
         {
-            if (!HasInput)
+            if (key.Key == ConsoleKey.Enter)
             {
-                if (key.Key == ConsoleKey.Enter)
+                if (Suggestion != null)
                 {
-                    if (Suggestion != null)
-                    {
-                        LastInput = Suggestion;
-                    }
-                    else
-                    {
-                        LastInput = CurrentInput;
-                    }
-                    CurrentInput = "";
-                    Suggestion = null;
-                    currentSuggestion = -1;
-                }
-                else if (key.Key == ConsoleKey.Escape)
-                {
-                    CurrentInput = "";
-                    Suggestion = null;
-                    currentSuggestion = -1;
-                }
-                else if (key.Key == ConsoleKey.Backspace)
-                {
-                    if (CurrentInput.Length > 0)
-                    {
-                        CurrentInput = CurrentInput.Substring(0, CurrentInput.Length - 1);
-                    }
-                    Suggestion = null;
-                    currentSuggestion = -1;
-                }
-                else if (key.Key == ConsoleKey.Tab)
-                {
-                    currentSuggestion++;
-                    if (currentSuggestion > suggestions.Count - 1)
-                    {
-                        currentSuggestion = -1;
-                        Suggestion = null;
-                    }
-                    else
-                    {
-                        Suggestion = suggestions[currentSuggestion];
-                    }
+                    LastInput.Enqueue(Suggestion);
                 }
                 else
                 {
-                    CurrentInput += key.KeyChar;
-                    suggestions = AutoCompleteWordList.Where(x => x.StartsWith(CurrentInput)).ToList();
-                    Suggestion = null;
-                    currentSuggestion = -1;
+                    LastInput.Enqueue(CurrentInput);
                 }
+                CurrentInput = "";
+                Suggestion = null;
+                currentSuggestion = -1;
+            }
+            else if (key.Key == ConsoleKey.Escape)
+            {
+                CurrentInput = "";
+                Suggestion = null;
+                currentSuggestion = -1;
+            }
+            else if (key.Key == ConsoleKey.Backspace)
+            {
+                if (CurrentInput.Length > 0)
+                {
+                    CurrentInput = CurrentInput.Substring(0, CurrentInput.Length - 1);
+                }
+                Suggestion = null;
+                currentSuggestion = -1;
+            }
+            else if (key.Key == ConsoleKey.Tab)
+            {
+                currentSuggestion++;
+                if (currentSuggestion > suggestions.Count - 1)
+                {
+                    currentSuggestion = -1;
+                    Suggestion = null;
+                }
+                else
+                {
+                    Suggestion = suggestions[currentSuggestion];
+                }
+            }
+            else
+            {
+                CurrentInput += key.KeyChar;
+                suggestions = AutoCompleteWordList.Where(x => x.StartsWith(CurrentInput)).ToList();
+                Suggestion = null;
+                currentSuggestion = -1;
             }
         }
     }
