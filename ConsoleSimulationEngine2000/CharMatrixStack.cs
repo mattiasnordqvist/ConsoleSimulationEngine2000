@@ -5,8 +5,12 @@ namespace ConsoleSimulationEngine2000
 {
     internal class CharMatrixStack
     {
-        private List<CharMatrix> stack = new List<CharMatrix>();
+        private List<CharMatrix> stack;
 
+        public CharMatrixStack(int size)
+        {
+            stack = new List<CharMatrix>(size);
+        }
         internal void Add(CharMatrix cm)
         {
             stack.Add(cm);

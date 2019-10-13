@@ -11,7 +11,7 @@ namespace ConsoleSimulationEngine2000
         /// <summary>
         /// Returns the displays to be printed in Console
         /// </summary>
-        public abstract IEnumerable<BaseDisplay> Displays { get; }
+        public abstract List<BaseDisplay> Displays { get; }
 
         /// <summary>
         /// Gets the input

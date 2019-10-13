@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -63,10 +64,11 @@ namespace ConsoleSimulationEngine2000
             {
                 c[i] = new char[Console.WindowWidth];
             }
-            CharMatrixStack cms = new CharMatrixStack();
+            var displays = simulation.Displays;
+            CharMatrixStack cms = new CharMatrixStack(displays.Count + 1);
             CharMatrix cm = new CharMatrix(c, 0, 0, Console.WindowWidth, Console.WindowHeight);
             cms.Add(cm);
-            foreach (var display in simulation.Displays)
+            foreach (var display in displays)
             {
                 cms.Add(display.GetCharMatrix());
             }
@@ -76,6 +78,7 @@ namespace ConsoleSimulationEngine2000
             Console.SetCursorPosition(0, 0);
             if (lastRendered == null || lastRendered.Length != backBuffer.Length)
             {
+                Console.CursorVisible = false;
                 Console.Write(backBuffer);
             }
             else
