@@ -18,6 +18,8 @@ namespace ConsoleSimulationEngine2000
         }
 
         private bool started;
+        public int TargetRenderTime { get; set; } = 20;
+        public int TargetUpdateTime { get; set; } = 1000;
 
         /// <summary>
         /// Starts a simulation
@@ -36,10 +38,20 @@ namespace ConsoleSimulationEngine2000
             simulation.Input = input;
             await Task.Run(() =>
             {
+                int delta = 0;
                 while (true)
                 {
-                    Thread.Sleep(1000 / simulation.FPS);
-                    simulation.PassTime(1000 / simulation.FPS);
+                    var s1 = DateTime.UtcNow;
+                    Thread.Sleep(TargetRenderTime);
+                    var s2 = DateTime.UtcNow;
+                    delta += (s2 - s1).Milliseconds;
+                    if (delta > TargetUpdateTime)
+                    {
+                        var u1 = DateTime.UtcNow;
+                        simulation.PassTime(delta);
+                        LastUpdateTime = (u1 - DateTime.UtcNow);
+                        delta = 0;
+                    }
 
                     while (Console.KeyAvailable)
                     {
@@ -55,6 +67,7 @@ namespace ConsoleSimulationEngine2000
 
         public TimeSpan BackBufferRenderTime { get; private set; }
         public TimeSpan ScreenRenderTime { get; private set; }
+        public TimeSpan LastUpdateTime { get; private set; }
 
         private void Render(Simulation simulation)
         {
