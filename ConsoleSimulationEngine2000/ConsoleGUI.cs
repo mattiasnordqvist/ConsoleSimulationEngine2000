@@ -36,13 +36,13 @@ namespace ConsoleSimulationEngine2000
 
             var input = new Input();
             simulation.Input = input;
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
                 int delta = 0;
                 while (true)
                 {
                     var s1 = DateTime.UtcNow;
-                    Thread.Sleep(TargetRenderTime);
+                    await Task.Delay(TargetRenderTime);
                     var s2 = DateTime.UtcNow;
                     delta += (s2 - s1).Milliseconds;
                     if (delta > TargetUpdateTime)
@@ -96,8 +96,6 @@ namespace ConsoleSimulationEngine2000
             }
             else
             {
-                //Console.CursorVisible = false;
-                //Console.Write(backBuffer);
                 var backLines = backBuffer.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
                 var lastRenderedLines = lastRendered.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
                 for (int y = 0; y < backLines.Length; y++)
