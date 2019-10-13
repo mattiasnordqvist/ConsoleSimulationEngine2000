@@ -1,7 +1,4 @@
-﻿using System.Drawing;
-using ArtisticPastelPainter;
-
-namespace ConsoleSimulationEngine2000
+﻿namespace ConsoleSimulationEngine2000
 {
     public class BasicDisplay : BaseDisplay
     {
