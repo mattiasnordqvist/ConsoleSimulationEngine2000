@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using ArtisticPastelPainter;
 
 namespace ConsoleSimulationEngine2000
 {
