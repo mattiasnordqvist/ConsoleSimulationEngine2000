@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,10 +6,6 @@ namespace ConsoleSimulationEngine2000
 {
     public class Input
     {
-        public Input(object cursorLock)
-        {
-            this.cursorLock = cursorLock;
-        }
         internal Queue<string> LastInput { get; } = new Queue<string>();
         internal string CurrentInput { get; set; } = "";
         internal string Suggestion { get; set; } = null;
@@ -18,7 +13,6 @@ namespace ConsoleSimulationEngine2000
         internal List<string> AutoCompleteWordList = new List<string>();
         internal List<string> suggestions = new List<string>();
         internal int currentSuggestion = -1;
-        internal readonly object cursorLock;
 
         public BaseDisplay CreateDisplay(int x, int y, int width, int height)
         {

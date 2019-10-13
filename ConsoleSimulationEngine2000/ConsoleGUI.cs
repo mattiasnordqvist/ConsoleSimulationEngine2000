@@ -11,15 +11,11 @@ namespace ConsoleSimulationEngine2000
     {
         public ConsoleGUI(int height = 35, int width = 150)
         {
-            lock (cursorLock)
-            {
-                Console.WindowWidth = width;
-                Console.WindowHeight = height;
-                Console.CursorVisible = false;
-            }
+            Console.WindowWidth = width;
+            Console.WindowHeight = height;
+            Console.CursorVisible = false;
         }
 
-        public static object cursorLock = new object();
         private bool started;
 
         /// <summary>
@@ -35,7 +31,7 @@ namespace ConsoleSimulationEngine2000
             }
             started = true;
 
-            var input = new Input(cursorLock);
+            var input = new Input();
             simulation.Input = input;
             await Task.Run(() =>
             {
@@ -56,14 +52,12 @@ namespace ConsoleSimulationEngine2000
         }
         string lastRendered = null;
 
-        public TimeSpan RenderTime { get; private set; }
-        public TimeSpan PrintTime { get; private set; }
+        public TimeSpan BackBufferRenderTime { get; private set; }
+        public TimeSpan ScreenRenderTime { get; private set; }
 
         private void Render(Simulation simulation)
         {
             var ms1 = DateTime.UtcNow;
-            var backBuffer = "";
-
             char[][] c = new char[Console.WindowHeight][];
             for (int i = 0; i < c.Length; i++)
             {
@@ -74,45 +68,41 @@ namespace ConsoleSimulationEngine2000
             cms.Add(cm);
             foreach (var display in simulation.Displays)
             {
-                //backBuffer = backBuffer.Blend(display.FullDisplay()).ToString();
                 cms.Add(display.GetCharMatrix());
             }
-            backBuffer = cms.ToString(Console.WindowWidth, Console.WindowHeight);
+            var backBuffer = cms.ToString(Console.WindowWidth, Console.WindowHeight);
             var ms2 = DateTime.UtcNow;
 
-            lock (cursorLock)
+            Console.SetCursorPosition(0, 0);
+            if (lastRendered == null || lastRendered.Length != backBuffer.Length)
             {
-                Console.SetCursorPosition(0, 0);
-                if (lastRendered == null || lastRendered.Length != backBuffer.Length)
+                Console.Write(backBuffer);
+            }
+            else
+            {
+                var backLines = backBuffer.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+                var lastRenderedLines = lastRendered.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+                for (int y = 0; y < backLines.Length; y++)
                 {
-                    Console.Write(backBuffer);
-                }
-                else
-                {
-                    var backLines = backBuffer.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
-                    var lastRenderedLines = lastRendered.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
-                    for (int y = 0; y < backLines.Length; y++)
+                    if (backLines[y] != lastRenderedLines[y])
                     {
-                        if (backLines[y] != lastRenderedLines[y])
+                        for (int x = 0; x < backLines.Length; x++)
                         {
-                            for (int x = 0; x < backLines.Length; x++)
-                            {
 
-                                if (backLines[y][x] != lastRenderedLines[y][x])
-                                {
-                                    Console.SetCursorPosition(x, y);
-                                    Console.Write(backLines[y][x]);
-                                }
+                            if (backLines[y][x] != lastRenderedLines[y][x])
+                            {
+                                Console.SetCursorPosition(x, y);
+                                Console.Write(backLines[y][x]);
                             }
                         }
                     }
-
                 }
-                var ms3 = DateTime.UtcNow;
 
-                RenderTime = ms2 - ms1;
-                PrintTime = ms3 - ms2;
             }
+            var ms3 = DateTime.UtcNow;
+
+            BackBufferRenderTime = ms2 - ms1;
+            ScreenRenderTime = ms3 - ms2;
             lastRendered = backBuffer;
         }
     }
