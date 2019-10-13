@@ -5,12 +5,13 @@ namespace ConsoleSimulationEngine2000
 {
     public abstract class Simulation
     {
-        public int UpdatePeriod { get; set; } = 1000;
+        public int FPS { get; set; } = 20;
+        public int SimulationTickPeriod { get; set; } = 1000;
 
         /// <summary>
         /// Returns the displays to be printed in Console
         /// </summary>
-        public abstract IEnumerable<Display> Displays { get; }
+        public abstract IEnumerable<BaseDisplay> Displays { get; }
 
         /// <summary>
         /// Gets the input

@@ -7,7 +7,7 @@ namespace ConsoleSimulationEngine2000
     /// <summary>
     /// A rolling display with a max line count of height - 2
     /// </summary>
-    public class RollingDisplay : Display
+    public class RollingDisplay : BorderedDisplay
     {
         private List<string> lines = new List<string>();
 
@@ -18,7 +18,7 @@ namespace ConsoleSimulationEngine2000
         public void Log(string message)
         {
             lines.Add(message);
-            lines = lines.Skip(lines.Count - (GetHeight() - 2)).ToList();
+            lines = lines.Skip(lines.Count - LogSize).ToList();
             var sb = new StringBuilder();
             foreach (var item in lines)
             {
@@ -26,5 +26,7 @@ namespace ConsoleSimulationEngine2000
             }
             Value = sb.ToString();
         }
+
+        private int LogSize => GetHeight() - 2;
     }
 }

@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ArtisticPastelPainter;
 
 namespace ConsoleSimulationEngine2000
 {
@@ -17,16 +13,14 @@ namespace ConsoleSimulationEngine2000
         {
             lock (cursorLock)
             {
-                Console.SetCursorPosition(0, InputStartLine);
                 Console.WindowWidth = width;
                 Console.WindowHeight = height;
                 Console.CursorVisible = false;
             }
         }
+
         public static object cursorLock = new object();
         private bool started;
-
-        public int InputStartLine { get { return Console.WindowHeight - 2; } }
 
         /// <summary>
         /// Starts a simulation
@@ -41,54 +35,85 @@ namespace ConsoleSimulationEngine2000
             }
             started = true;
 
-            var input = new Input();
+            var input = new Input(cursorLock);
             simulation.Input = input;
-            Task.Run(() => CaptureInput(input));
-
             await Task.Run(() =>
             {
                 while (true)
                 {
-                    Thread.Sleep(simulation.UpdatePeriod);
-                    simulation.PassTime(simulation.UpdatePeriod);
+                    Thread.Sleep(1000 / simulation.FPS);
+                    simulation.PassTime(1000 / simulation.FPS);
+
+                    while (Console.KeyAvailable)
+                    {
+                        ConsoleKeyInfo key = Console.ReadKey(true);
+                        input.KeyInputted(key);
+                    }
+
                     Render(simulation);
                 }
             });
         }
+        string lastRendered = null;
 
-        private void Render(Simulation game)
+        public TimeSpan RenderTime { get; private set; }
+        public TimeSpan PrintTime { get; private set; }
+
+        private void Render(Simulation simulation)
         {
-            foreach (var display in game.Displays)
+            var ms1 = DateTime.UtcNow;
+            var backBuffer = "";
+
+            char[][] c = new char[Console.WindowHeight][];
+            for (int i = 0; i < c.Length; i++)
             {
-                display.Print(cursorLock);
+                c[i] = new char[Console.WindowWidth];
             }
-        }
-
-        private void CaptureInput(Input input)
-        {
-            Console.SetCursorPosition(0, InputStartLine);
-            Console.Write("> _" + "".PadRight(Console.WindowWidth));
-            while (true)
+            CharMatrixStack cms = new CharMatrixStack();
+            CharMatrix cm = new CharMatrix(c, 0, 0, Console.WindowWidth, Console.WindowHeight);
+            cms.Add(cm);
+            foreach (var display in simulation.Displays)
             {
-                Thread.Sleep(30);
+                //backBuffer = backBuffer.Blend(display.FullDisplay()).ToString();
+                cms.Add(display.GetCharMatrix());
+            }
+            backBuffer = cms.ToString(Console.WindowWidth, Console.WindowHeight);
+            var ms2 = DateTime.UtcNow;
 
-                while (Console.KeyAvailable)
+            lock (cursorLock)
+            {
+                Console.SetCursorPosition(0, 0);
+                if (lastRendered == null || lastRendered.Length != backBuffer.Length)
                 {
-                    ConsoleKeyInfo key = Console.ReadKey(true);
-                    input.KeyInputted(key);
-                    lock (cursorLock)
-                    {
-                        Console.SetCursorPosition(0, InputStartLine);
-                        ArtisticString text = input.CurrentInput;
-                        if (input.Suggestion != null)
-                        {
-                            text = input.CurrentInput + new ArtisticString(input.Suggestion.Substring(input.CurrentInput.Length), Color.Gray);
-                        }
-
-                        Console.Write("> " + text + "_" + "".PadRight(Console.WindowWidth));
-                    }
+                    Console.Write(backBuffer);
                 }
+                else
+                {
+                    var backLines = backBuffer.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+                    var lastRenderedLines = lastRendered.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+                    for (int y = 0; y < backLines.Length; y++)
+                    {
+                        if (backLines[y] != lastRenderedLines[y])
+                        {
+                            for (int x = 0; x < backLines.Length; x++)
+                            {
+
+                                if (backLines[y][x] != lastRenderedLines[y][x])
+                                {
+                                    Console.SetCursorPosition(x, y);
+                                    Console.Write(backLines[y][x]);
+                                }
+                            }
+                        }
+                    }
+
+                }
+                var ms3 = DateTime.UtcNow;
+
+                RenderTime = ms2 - ms1;
+                PrintTime = ms3 - ms2;
             }
+            lastRendered = backBuffer;
         }
     }
 }
