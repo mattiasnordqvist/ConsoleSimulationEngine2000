@@ -14,6 +14,7 @@ namespace ConsoleSimulationEngine2000
         internal List<string> suggestions = new List<string>();
         internal int currentSuggestion = -1;
 
+        public bool EnterToCommit = true;
         public BaseDisplay CreateDisplay(int x, int y, int width, int height)
         {
             return new InputDisplay(this, x, y, width, height);
@@ -53,54 +54,61 @@ namespace ConsoleSimulationEngine2000
 
         internal void KeyInputted(ConsoleKeyInfo key)
         {
-            if (key.Key == ConsoleKey.Enter)
+            if (EnterToCommit)
             {
-                if (Suggestion != null)
+                if (key.Key == ConsoleKey.Enter)
                 {
-                    LastInput.Enqueue(Suggestion);
-                }
-                else
-                {
-                    LastInput.Enqueue(CurrentInput);
-                }
-                CurrentInput = "";
-                Suggestion = null;
-                currentSuggestion = -1;
-            }
-            else if (key.Key == ConsoleKey.Escape)
-            {
-                CurrentInput = "";
-                Suggestion = null;
-                currentSuggestion = -1;
-            }
-            else if (key.Key == ConsoleKey.Backspace)
-            {
-                if (CurrentInput.Length > 0)
-                {
-                    CurrentInput = CurrentInput.Substring(0, CurrentInput.Length - 1);
-                }
-                Suggestion = null;
-                currentSuggestion = -1;
-            }
-            else if (key.Key == ConsoleKey.Tab)
-            {
-                currentSuggestion++;
-                if (currentSuggestion > suggestions.Count - 1)
-                {
-                    currentSuggestion = -1;
+                    if (Suggestion != null)
+                    {
+                        LastInput.Enqueue(Suggestion);
+                    }
+                    else
+                    {
+                        LastInput.Enqueue(CurrentInput);
+                    }
+                    CurrentInput = "";
                     Suggestion = null;
+                    currentSuggestion = -1;
+                }
+                else if (key.Key == ConsoleKey.Escape)
+                {
+                    CurrentInput = "";
+                    Suggestion = null;
+                    currentSuggestion = -1;
+                }
+                else if (key.Key == ConsoleKey.Backspace)
+                {
+                    if (CurrentInput.Length > 0)
+                    {
+                        CurrentInput = CurrentInput.Substring(0, CurrentInput.Length - 1);
+                    }
+                    Suggestion = null;
+                    currentSuggestion = -1;
+                }
+                else if (key.Key == ConsoleKey.Tab)
+                {
+                    currentSuggestion++;
+                    if (currentSuggestion > suggestions.Count - 1)
+                    {
+                        currentSuggestion = -1;
+                        Suggestion = null;
+                    }
+                    else
+                    {
+                        Suggestion = suggestions[currentSuggestion];
+                    }
                 }
                 else
                 {
-                    Suggestion = suggestions[currentSuggestion];
+                    CurrentInput += key.KeyChar;
+                    suggestions = AutoCompleteWordList.Where(x => x.StartsWith(CurrentInput)).ToList();
+                    Suggestion = null;
+                    currentSuggestion = -1;
                 }
             }
             else
             {
-                CurrentInput += key.KeyChar;
-                suggestions = AutoCompleteWordList.Where(x => x.StartsWith(CurrentInput)).ToList();
-                Suggestion = null;
-                currentSuggestion = -1;
+                LastInput.Enqueue("" + key.KeyChar);
             }
         }
     }

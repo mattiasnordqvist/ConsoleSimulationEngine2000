@@ -11,11 +11,6 @@ namespace ConsoleSimulationEngine2000
         public abstract List<BaseDisplay> Displays { get; }
 
         /// <summary>
-        /// Gets the input
-        /// </summary>
-        public Input Input { get; internal set; }
-
-        /// <summary>
         /// Advances simulation state by deltaTime
         /// </summary>
         /// <param name="deltaTime">The number of milliseconds that have passed since last time time passed</param>
