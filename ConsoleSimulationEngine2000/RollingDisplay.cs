@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -24,6 +25,7 @@ namespace ConsoleSimulationEngine2000
             {
                 sb.AppendLine(item);
             }
+            sb.Remove(sb.Length - Environment.NewLine.Length, Environment.NewLine.Length);
             Value = sb.ToString();
         }
 

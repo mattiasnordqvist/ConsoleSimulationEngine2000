@@ -96,13 +96,15 @@ namespace ConsoleSimulationEngine2000
             }
             else
             {
+                //Console.CursorVisible = false;
+                //Console.Write(backBuffer);
                 var backLines = backBuffer.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
                 var lastRenderedLines = lastRendered.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
                 for (int y = 0; y < backLines.Length; y++)
                 {
                     if (backLines[y] != lastRenderedLines[y])
                     {
-                        for (int x = 0; x < backLines.Length; x++)
+                        for (int x = 0; x < backLines[y].Length; x++)
                         {
 
                             if (backLines[y][x] != lastRenderedLines[y][x])

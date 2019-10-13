@@ -28,7 +28,7 @@ namespace ConsoleSimulationEngine2000
                         if (x >= s.x && x < s.x + s.w)
                         {
                             var c = s.m[y - s.y][x - s.x];
-                            if (c != ' ')
+                            if (c != ' ' && c!= '\0')
                             {
                                 return c;
                             }

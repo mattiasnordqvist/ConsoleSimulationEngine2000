@@ -22,7 +22,7 @@ namespace ConsoleSimulationEngine2000
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("#" + "-".PadRight(GetWidth() - 2, '-') + "#");
-            var lines = Value.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            var lines = Value.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
             for (int i = 0; i < GetHeight() - 2; i++)
             {
                 if (lines.Count() > i)
