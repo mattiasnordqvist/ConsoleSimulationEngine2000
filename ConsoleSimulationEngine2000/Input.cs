@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,6 +13,11 @@ namespace ConsoleSimulationEngine2000
         internal List<string> AutoCompleteWordList = new List<string>();
         internal List<string> suggestions = new List<string>();
         internal int currentSuggestion = -1;
+
+        public BaseDisplay CreateDisplay(int x, int y, int width, int height)
+        {
+            return new InputDisplay(this, x, y, width, height);
+        }
 
         /// <summary>
         /// Sets the available auto complete suggestions.
