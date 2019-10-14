@@ -15,9 +15,9 @@ namespace ConsoleSimulationEngine2000
         internal int currentSuggestion = -1;
 
         public bool EnterToCommit = true;
-        public BaseDisplay CreateDisplay(int x, int y, int width, int height)
+        public BaseDisplay CreateDisplay(int x, int y, int width)
         {
-            return new InputDisplay(this, x, y, width, height);
+            return new InputDisplay(this, x, y, width);
         }
 
         /// <summary>
