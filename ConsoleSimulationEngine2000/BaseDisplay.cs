@@ -41,7 +41,7 @@ namespace ConsoleSimulationEngine2000
             var h = GetHeight();
             var m = new char[h][];
 
-            var lines = GetStringToDisplay().Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+            var lines = GetStringToDisplay(true).Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
             for (int y = 0; y < lines.Length; y++)
             {
                 m[y] = lines[y].PadRight(w).ToCharArray();
@@ -54,7 +54,7 @@ namespace ConsoleSimulationEngine2000
             return new CharMatrix(m, GetX(), GetY(), w, h);
         }
 
-        internal abstract string GetStringToDisplay();
+        internal abstract string GetStringToDisplay(bool optimizedForPerformance);
 
         internal virtual int GetX()
         {

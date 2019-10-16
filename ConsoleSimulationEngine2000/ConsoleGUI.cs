@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Linq;
-using System.Threading;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace ConsoleSimulationEngine2000
@@ -22,6 +21,9 @@ namespace ConsoleSimulationEngine2000
         public int TargetRenderTime { get; set; } = 20;
         public int TargetUpdateTime { get; set; } = 1000;
 
+        public bool ForceFullNextRender { get; set; } = false;
+        public bool OptimizedForPerformance { get; set; } = false;
+
         /// <summary>
         /// Starts a simulation
         /// </summary>
@@ -29,7 +31,7 @@ namespace ConsoleSimulationEngine2000
         /// <returns></returns>
         public async Task Start(Simulation simulation)
         {
-            
+
             if (started)
             {
                 throw new InvalidOperationException("Can only run one simulation at a time");
@@ -73,28 +75,62 @@ namespace ConsoleSimulationEngine2000
         private void Render(Simulation simulation)
         {
             var ms1 = DateTime.UtcNow;
-            char[][] c = new char[Console.WindowHeight][];
-            for (int i = 0; i < c.Length; i++)
+            string backBuffer = "";
+            if (OptimizedForPerformance)
             {
-                c[i] = new char[Console.WindowWidth];
+                char[][] c = new char[Console.WindowHeight][];
+                for (int i = 0; i < c.Length; i++)
+                {
+                    c[i] = new char[Console.WindowWidth];
+                }
+                var displays = simulation.Displays;
+                CharMatrixStack cms = new CharMatrixStack(displays.Count + 1);
+                CharMatrix cm = new CharMatrix(c, 0, 0, Console.WindowWidth, Console.WindowHeight);
+                cms.Add(cm);
+                foreach (var display in displays)
+                {
+                    cms.Add(display.GetCharMatrix());
+                }
+                backBuffer = cms.ToString(Console.WindowWidth, Console.WindowHeight);
             }
-            var displays = simulation.Displays;
-            CharMatrixStack cms = new CharMatrixStack(displays.Count + 1);
-            CharMatrix cm = new CharMatrix(c, 0, 0, Console.WindowWidth, Console.WindowHeight);
-            cms.Add(cm);
-            foreach (var display in displays)
+            else
             {
-                cms.Add(display.GetCharMatrix());
+                var lines = new StringBuilder[Console.WindowHeight];
+                for (int i = 0; i < Console.WindowHeight; i++)
+                {
+                    lines[i] = new StringBuilder();
+                    lines[i].Append("".PadRight(Console.WindowWidth));
+                }
+                foreach (var display in simulation.Displays)
+                {
+                    var t = display.GetStringToDisplay(false).Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+                    int row = 0;
+                    for (int y = display.GetY(); y < display.GetY() + display.GetHeight(); y++)
+                    {
+                        if (row < t.Length)
+                        {
+                            lines[y].Remove(display.GetX(), display.GetWidth());
+                            lines[y].Insert(display.GetX(), t[row].PadRight(display.GetWidth()).Substring(0, display.GetWidth()));
+                        }
+                        row++;
+                    }
+                }
+                StringBuilder sb = new StringBuilder();
+                foreach (var line in lines)
+                {
+                    sb.AppendLine(line.ToString());
+                }
+                sb.Remove(sb.Length - Environment.NewLine.Length, Environment.NewLine.Length);
+                backBuffer = sb.ToString();
             }
-            var backBuffer = cms.ToString(Console.WindowWidth, Console.WindowHeight);
             var ms2 = DateTime.UtcNow;
 
             Console.SetCursorPosition(0, 0);
-            if (simulation.ForceFullNextRender || lastRendered == null || lastRendered.Length != backBuffer.Length)
+            if (!OptimizedForPerformance || ForceFullNextRender || lastRendered == null || lastRendered.Length != backBuffer.Length)
             {
                 Console.CursorVisible = false;
                 Console.Write(backBuffer);
-                simulation.ForceFullNextRender = false;
+                ForceFullNextRender = false;
             }
             else
             {

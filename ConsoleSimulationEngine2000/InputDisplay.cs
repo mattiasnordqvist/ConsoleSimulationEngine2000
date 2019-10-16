@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Drawing;
+using Pastel;
 
 namespace ConsoleSimulationEngine2000
 {
@@ -11,12 +13,19 @@ namespace ConsoleSimulationEngine2000
             this.input = input;
         }
 
-        internal override string GetStringToDisplay()
+        internal override string GetStringToDisplay(bool optimizedForPerformance)
         {
             string text = input.CurrentInput;
             if (input.Suggestion != null)
             {
-                text = input.CurrentInput + input.Suggestion.Substring(input.CurrentInput.Length);
+                if (optimizedForPerformance)
+                {
+                    text = input.CurrentInput + input.Suggestion.Substring(input.CurrentInput.Length);
+                }
+                else
+                {
+                    text = input.CurrentInput.Pastel(Color.White) + input.Suggestion.Substring(input.CurrentInput.Length);
+                }
             }
 
             return "> " + text + "_" + "".PadRight(Console.WindowWidth);
