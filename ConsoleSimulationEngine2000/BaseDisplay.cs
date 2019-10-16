@@ -13,7 +13,6 @@ namespace ConsoleSimulationEngine2000
     /// <param name="height">Height of display. Negative values means width should be subtracted from Window height.</param>
     public abstract class BaseDisplay
     {
-        public BaseDisplay() { }
         public BaseDisplay(int x, int y, int width, int height)
         {
             X = x;
@@ -54,7 +53,7 @@ namespace ConsoleSimulationEngine2000
             return new CharMatrix(m, GetX(), GetY(), w, h);
         }
 
-        internal abstract string GetStringToDisplay(bool optimizedForPerformance);
+        protected internal abstract string GetStringToDisplay(bool optimizedForPerformance);
 
         internal virtual int GetX()
         {

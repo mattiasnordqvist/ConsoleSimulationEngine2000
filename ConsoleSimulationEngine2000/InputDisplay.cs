@@ -13,7 +13,7 @@ namespace ConsoleSimulationEngine2000
             this.input = input;
         }
 
-        internal override string GetStringToDisplay(bool optimizedForPerformance)
+        protected internal override string GetStringToDisplay(bool optimizedForPerformance)
         {
             Func<string, string> highLight = (x) => optimizedForPerformance ? x : x.Pastel(Color.White);
             string text = highLight(input.CurrentInput);
