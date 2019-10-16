@@ -96,6 +96,7 @@ namespace ConsoleSimulationEngine2000
                     else
                     {
                         Suggestion = suggestions[currentSuggestion];
+                        CurrentInput = Suggestion;
                     }
                 }
                 else
