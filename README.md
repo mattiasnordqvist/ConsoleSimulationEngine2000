@@ -1,4 +1,5 @@
 # ConsoleSimulationEngine2000
+"Live" update of console window
 
 ## Install
 
