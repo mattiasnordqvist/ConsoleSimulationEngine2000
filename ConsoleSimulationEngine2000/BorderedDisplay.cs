@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace ConsoleSimulationEngine2000
 {
@@ -18,7 +19,7 @@ namespace ConsoleSimulationEngine2000
 
         }
 
-        protected internal override string GetStringToDisplay(bool optimizedForPerformance)
+        protected internal override string GetStringToDisplay()
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("#" + "-".PadRight(GetWidth() - 2, '-') + "#");
@@ -27,7 +28,8 @@ namespace ConsoleSimulationEngine2000
             {
                 if (lines.Count() > i)
                 {
-                    sb.AppendLine("| " + lines[i].PadRight(GetWidth() - 4).Substring(0, GetWidth() - 4) + " |");
+                    var lineLengthDiff = lines[i].Length - Regex.Replace(lines[i], @"("+'\u001b'+@"\[\d\d;2;\d{1,3};\d{1,3};\d{1,3}m)|("+ '\u001b' + @"\[0m)", "").Length;
+                    sb.AppendLine("| " + lines[i].PadRight(GetWidth() - 4+lineLengthDiff).Substring(0, GetWidth() - 4 + lineLengthDiff) + " |");
                 }
                 else
                 {

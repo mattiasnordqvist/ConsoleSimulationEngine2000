@@ -13,7 +13,7 @@ namespace ConsoleSimulationEngine2000
             this.input = input;
         }
 
-        protected internal override string GetStringToDisplay(bool optimizedForPerformance)
+        protected internal override string GetStringToDisplay()
         {
 
             string text = input.CurrentInput.Pastel(Color.White);

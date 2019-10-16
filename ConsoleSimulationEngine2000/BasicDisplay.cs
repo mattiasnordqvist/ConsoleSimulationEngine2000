@@ -11,7 +11,7 @@
         /// </summary>
         public string Value { get; set; } = "";
 
-        protected internal override string GetStringToDisplay(bool optimizedForPerformance)
+        protected internal override string GetStringToDisplay()
         {
             return Value.Trim();
         }
