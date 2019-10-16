@@ -90,10 +90,11 @@ namespace ConsoleSimulationEngine2000
             var ms2 = DateTime.UtcNow;
 
             Console.SetCursorPosition(0, 0);
-            if (lastRendered == null || lastRendered.Length != backBuffer.Length)
+            if (simulation.ForceFullNextRender || lastRendered == null || lastRendered.Length != backBuffer.Length)
             {
                 Console.CursorVisible = false;
                 Console.Write(backBuffer);
+                simulation.ForceFullNextRender = false;
             }
             else
             {

@@ -9,6 +9,7 @@ namespace ConsoleSimulationEngine2000
         /// Returns the displays to be printed in Console
         /// </summary>
         public abstract List<BaseDisplay> Displays { get; }
+        public bool ForceFullNextRender { get; set; } = false;
 
         /// <summary>
         /// Advances simulation state by deltaTime
