@@ -81,6 +81,7 @@ namespace ConsoleSimulationEngine2000
                     if (CurrentInput.Length > 0)
                     {
                         CurrentInput = CurrentInput.Substring(0, CurrentInput.Length - 1);
+                        suggestions = AutoCompleteWordList.Where(x => x.StartsWith(CurrentInput)).ToList();
                     }
                     Suggestion = null;
                     currentSuggestion = -1;
