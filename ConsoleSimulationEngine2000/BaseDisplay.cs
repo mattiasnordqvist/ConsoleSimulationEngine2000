@@ -44,17 +44,13 @@ namespace ConsoleSimulationEngine2000
             {
                 m[y] = new (char c, string pre, string post)[w];
             }
-            string lastColor = null;
             var inColor = false;
             var colorStart = -1;
-            string color = null;
+            string pre = null;
+            string post = null;
             var colorEnding = false;
             for (int y = 0; y < lines.Length; y++)
             {
-                if (lastColor != null)
-                {
-                    color = lastColor;
-                }
                 var skipped = 0;
                 for (int x = 0; x < w && x + skipped < lines[y].Length;)
                 {
@@ -74,14 +70,12 @@ namespace ConsoleSimulationEngine2000
                                 colorEnding = true;
                                 skipped += 2;
                                 colorStart = -1;
-
                             }
                             skipped++;
                         }
                         else
                         {
-                            m[y][x] = (c, color, null);
-                            color = null;
+                            m[y][x] = (c, pre, post);
                             x++;
                         }
                     }
@@ -91,21 +85,14 @@ namespace ConsoleSimulationEngine2000
                         {
                             if (colorStart > -1)
                             {
-                                color = lines[y][colorStart..(x + skipped + 1)];
-                                lastColor = color;
+                                pre = lines[y][colorStart..(x + skipped + 1)];
+                                post = '\u001b' + "[0m";
                             }
                             if (colorEnding)
                             {
-                                if (color == null)
-                                {
-                                    m[y][x - 1].post = "\u001b[0m";
-                                }
-                                else
-                                {
-                                    color = null;
-                                }
+                                pre = null;
+                                post = null;
                                 colorEnding = false;
-                                lastColor = null;
                             }
 
                             inColor = false;
@@ -113,23 +100,6 @@ namespace ConsoleSimulationEngine2000
                         skipped++;
                     }
                 }
-                if (lastColor != null)
-                {
-                    m[y][^1].post = "\u001b[0m";
-                }
-                if (colorEnding)
-                {
-                    if (color == null)
-                    {
-                        m[y][^1].post = "\u001b[0m";
-                    }
-                    else
-                    {
-                        color = null;
-                    }
-                    colorEnding = false;
-                }
-              
             }
 
             return new CharMatrix(m, GetX(), GetY(), w, h);

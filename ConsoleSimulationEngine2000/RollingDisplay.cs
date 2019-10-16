@@ -27,18 +27,12 @@ namespace ConsoleSimulationEngine2000
             var rowNumber = 0;
             foreach (var item in lines)
             {
-                sb.AppendLine(item.Pastel(GetColor(rowNumber)));
+                sb.AppendLine(item);
                 rowNumber++;
                
             }
             sb.Remove(sb.Length - Environment.NewLine.Length, Environment.NewLine.Length);
             Value = sb.ToString();
-        }
-
-        public virtual Color GetColor(int rowNumber)
-        {
-            int r = 15 * rowNumber, g = 150, b = 210;
-            return Color.FromArgb(r, g, b);
         }
 
         private int LogSize => GetHeight() - 2;
