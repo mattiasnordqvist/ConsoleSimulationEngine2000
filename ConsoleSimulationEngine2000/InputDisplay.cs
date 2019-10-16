@@ -15,17 +15,11 @@ namespace ConsoleSimulationEngine2000
 
         internal override string GetStringToDisplay(bool optimizedForPerformance)
         {
-            string text = input.CurrentInput;
+            Func<string, string> highLight = (x) => optimizedForPerformance ? x : x.Pastel(Color.White);
+            string text = highLight(input.CurrentInput);
             if (input.Suggestion != null)
             {
-                if (optimizedForPerformance)
-                {
-                    text = input.CurrentInput + input.Suggestion.Substring(input.CurrentInput.Length);
-                }
-                else
-                {
-                    text = input.CurrentInput.Pastel(Color.White) + input.Suggestion.Substring(input.CurrentInput.Length);
-                }
+                    text = highLight(input.CurrentInput) + input.Suggestion.Substring(input.CurrentInput.Length);
             }
 
             return "> " + text + "_" + "".PadRight(Console.WindowWidth);

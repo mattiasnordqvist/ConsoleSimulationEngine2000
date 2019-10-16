@@ -101,7 +101,14 @@ namespace ConsoleSimulationEngine2000
                 }
                 else
                 {
-                    CurrentInput += key.KeyChar;
+                    if (Suggestion != null)
+                    {
+                        CurrentInput = Suggestion += key.KeyChar;
+                    }
+                    else
+                    {
+                        CurrentInput += key.KeyChar;
+                    }
                     suggestions = AutoCompleteWordList.Where(x => x.StartsWith(CurrentInput)).ToList();
                     Suggestion = null;
                     currentSuggestion = -1;
