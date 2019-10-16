@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace ConsoleSimulationEngine2000
@@ -16,7 +17,7 @@ namespace ConsoleSimulationEngine2000
             stack.Add(cm);
         }
 
-        internal char this[int x, int y]
+        internal (char c, string pre, string post) this[int x, int y]
         {
             get
             {
@@ -28,14 +29,14 @@ namespace ConsoleSimulationEngine2000
                         if (x >= s.x && x < s.x + s.w)
                         {
                             var c = s.m[y - s.y][x - s.x];
-                            if (c != ' ' && c!= '\0')
+                            if (c.Item1 != '\0')
                             {
                                 return c;
                             }
                         }
                     }
                 }
-                return ' ';
+                return (' ', null, null);
             }
         }
 
@@ -46,12 +47,43 @@ namespace ConsoleSimulationEngine2000
             {
                 for (int x = 0; x < windowWidth; x++)
                 {
-                    sb.Append(this[x, y]);
+                    var a = this[x, y];
+                    if (a.pre != null && a.post != null)
+                    {
+                        sb.Append(a.pre + a.c + a.post);
+                    }
+                    else if (a.post != null)
+                    {
+                        sb.Append(a.c+ a.post);
+                    }
+                    else if (a.pre != null)
+                    {
+                        sb.Append(a.pre + a.c);
+                    }
+                    else
+                    {
+                        sb.Append(a.c);
+                    }
+
                 }
                 if (y != windowHeight - 1)
                 { sb.AppendLine(); }
             }
             return sb.ToString();
+        }
+
+        internal (char, string, string)[][] ToArray(int windowWidth, int windowHeight)
+        {
+            var a = new (char, string, string)[windowHeight][];
+            for (int y = 0; y < windowHeight; y++)
+            {
+                a[y] = new (char, string, string)[windowWidth];
+                for (int x = 0; x < windowWidth; x++)
+                {
+                    a[y][x] = this[x, y];
+                }
+            }
+            return a;
         }
     }
 }

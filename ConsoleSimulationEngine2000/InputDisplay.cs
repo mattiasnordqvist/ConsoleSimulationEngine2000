@@ -13,13 +13,13 @@ namespace ConsoleSimulationEngine2000
             this.input = input;
         }
 
-        internal override string GetStringToDisplay(bool optimizedForPerformance)
+        protected internal override string GetStringToDisplay(bool optimizedForPerformance)
         {
-            Func<string, string> highLight = (x) => optimizedForPerformance ? x : x.Pastel(Color.White);
-            string text = highLight(input.CurrentInput);
+
+            string text = input.CurrentInput.Pastel(Color.White);
             if (input.Suggestion != null)
             {
-                    text = highLight(input.CurrentInput) + input.Suggestion.Substring(input.CurrentInput.Length);
+                    text = input.CurrentInput.Pastel(Color.White) + input.Suggestion.Substring(input.CurrentInput.Length);
             }
 
             return "> " + text + "_" + "".PadRight(Console.WindowWidth);

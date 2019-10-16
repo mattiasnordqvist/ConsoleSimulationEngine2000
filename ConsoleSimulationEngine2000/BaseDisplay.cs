@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Text;
 
 namespace ConsoleSimulationEngine2000
 {
@@ -39,22 +37,105 @@ namespace ConsoleSimulationEngine2000
         {
             var w = GetWidth();
             var h = GetHeight();
-            var m = new char[h][];
+            var m = new (char c, string pre, string post)[h][];
 
             var lines = GetStringToDisplay(true).Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+            for (int y = 0; y < m.Length; y++)
+            {
+                m[y] = new (char c, string pre, string post)[w];
+            }
+            string lastColor = null;
+            var inColor = false;
+            var colorStart = -1;
+            string color = null;
+            var colorEnding = false;
             for (int y = 0; y < lines.Length; y++)
             {
-                m[y] = lines[y].PadRight(w).ToCharArray();
-            }
-            for (int y = lines.Length; y < m.Length; y++)
-            {
-                m[y] = new char[w];
+                if (lastColor != null)
+                {
+                    color = lastColor;
+                }
+                var skipped = 0;
+                for (int x = 0; x < w && x + skipped < lines[y].Length;)
+                {
+                    var c = lines[y][x + skipped];
+                    if (!inColor)
+                    {
+                        if (c == '\u001b')
+                        {
+                            inColor = true;
+                            if (colorStart == -1)
+                            {
+                                colorStart = x + skipped;
+                                skipped += 6;
+                            }
+                            else
+                            {
+                                colorEnding = true;
+                                skipped += 2;
+                                colorStart = -1;
+
+                            }
+                            skipped++;
+                        }
+                        else
+                        {
+                            m[y][x] = (c, color, null);
+                            color = null;
+                            x++;
+                        }
+                    }
+                    else
+                    {
+                        if (c == 'm')
+                        {
+                            if (colorStart > -1)
+                            {
+                                color = lines[y][colorStart..(x + skipped + 1)];
+                                lastColor = color;
+                            }
+                            if (colorEnding)
+                            {
+                                if (color == null)
+                                {
+                                    m[y][x - 1].post = "\u001b[0m";
+                                }
+                                else
+                                {
+                                    color = null;
+                                }
+                                colorEnding = false;
+                                lastColor = null;
+                            }
+
+                            inColor = false;
+                        }
+                        skipped++;
+                    }
+                }
+                if (lastColor != null)
+                {
+                    m[y][^1].post = "\u001b[0m";
+                }
+                if (colorEnding)
+                {
+                    if (color == null)
+                    {
+                        m[y][^1].post = "\u001b[0m";
+                    }
+                    else
+                    {
+                        color = null;
+                    }
+                    colorEnding = false;
+                }
+              
             }
 
             return new CharMatrix(m, GetX(), GetY(), w, h);
         }
 
-        internal abstract string GetStringToDisplay(bool optimizedForPerformance);
+        protected internal abstract string GetStringToDisplay(bool optimizedForPerformance);
 
         internal virtual int GetX()
         {

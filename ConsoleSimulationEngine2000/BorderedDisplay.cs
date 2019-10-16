@@ -18,7 +18,7 @@ namespace ConsoleSimulationEngine2000
 
         }
 
-        internal override string GetStringToDisplay(bool optimizedForPerformance)
+        protected internal override string GetStringToDisplay(bool optimizedForPerformance)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("#" + "-".PadRight(GetWidth() - 2, '-') + "#");
