@@ -12,6 +12,7 @@ namespace ConsoleSimulationEngine2000
     {
         public ConsoleGUI(int height = 35, int width = 150)
         {
+            Input = new Input();
             Console.WindowWidth = width;
             Console.WindowHeight = height;
             Console.CursorVisible = false;
@@ -28,14 +29,13 @@ namespace ConsoleSimulationEngine2000
         /// <returns></returns>
         public async Task Start(Simulation simulation)
         {
+            
             if (started)
             {
                 throw new InvalidOperationException("Can only run one simulation at a time");
             }
             started = true;
 
-            var input = new Input();
-            simulation.Input = input;
             await Task.Run(async () =>
             {
                 int delta = 0;
@@ -56,7 +56,7 @@ namespace ConsoleSimulationEngine2000
                     while (Console.KeyAvailable)
                     {
                         ConsoleKeyInfo key = Console.ReadKey(true);
-                        input.KeyInputted(key);
+                        Input.KeyInputted(key);
                     }
 
                     Render(simulation);
@@ -68,6 +68,7 @@ namespace ConsoleSimulationEngine2000
         public TimeSpan BackBufferRenderTime { get; private set; }
         public TimeSpan ScreenRenderTime { get; private set; }
         public TimeSpan LastUpdateTime { get; private set; }
+        public Input Input { get; }
 
         private void Render(Simulation simulation)
         {
@@ -89,10 +90,11 @@ namespace ConsoleSimulationEngine2000
             var ms2 = DateTime.UtcNow;
 
             Console.SetCursorPosition(0, 0);
-            if (lastRendered == null || lastRendered.Length != backBuffer.Length)
+            if (simulation.ForceFullNextRender || lastRendered == null || lastRendered.Length != backBuffer.Length)
             {
                 Console.CursorVisible = false;
                 Console.Write(backBuffer);
+                simulation.ForceFullNextRender = false;
             }
             else
             {

@@ -6,7 +6,7 @@ namespace ConsoleSimulationEngine2000
     {
         private readonly Input input;
 
-        public InputDisplay(Input input, int x, int y, int width, int height) : base(x, y, width, height)
+        public InputDisplay(Input input, int x, int y, int width) : base(x, y, width, 1)
         {
             this.input = input;
         }
