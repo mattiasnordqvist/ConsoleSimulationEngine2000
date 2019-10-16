@@ -4,11 +4,11 @@ using Pastel;
 
 namespace ConsoleSimulationEngine2000
 {
-    public class InputDisplay : BaseDisplay
+    public class TextInputDisplay : BaseDisplay
     {
-        private readonly Input input;
+        private readonly TextInput input;
 
-        public InputDisplay(Input input, int x, int y, int width) : base(x, y, width, 1)
+        public TextInputDisplay(TextInput input, int x, int y, int width) : base(x, y, width, 1)
         {
             this.input = input;
         }

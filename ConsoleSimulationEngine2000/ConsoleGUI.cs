@@ -11,7 +11,6 @@ namespace ConsoleSimulationEngine2000
     {
         public ConsoleGUI(int height = 35, int width = 150)
         {
-            Input = new Input();
             Console.WindowWidth = width;
             Console.WindowHeight = height;
             Console.CursorVisible = false;
@@ -28,7 +27,6 @@ namespace ConsoleSimulationEngine2000
         /// <returns></returns>
         public async Task Start(Simulation simulation)
         {
-
             if (started)
             {
                 throw new InvalidOperationException("Can only run one simulation at a time");
@@ -51,8 +49,8 @@ namespace ConsoleSimulationEngine2000
                         LastUpdateTime = (u1 - DateTime.UtcNow);
                         delta = 0;
                     }
-
-                    while (Console.KeyAvailable)
+                    
+                    while (Input != null && Console.KeyAvailable)
                     {
                         ConsoleKeyInfo key = Console.ReadKey(true);
                         Input.KeyInputted(key);
@@ -62,12 +60,11 @@ namespace ConsoleSimulationEngine2000
                 }
             });
         }
-        (char, string, string)[][] lastRendered = null;
 
         public TimeSpan BackBufferRenderTime { get; private set; }
         public TimeSpan ScreenRenderTime { get; private set; }
         public TimeSpan LastUpdateTime { get; private set; }
-        public Input Input { get; }
+        public IInput Input { get; set; }
 
         private void Render(Simulation simulation)
         {
