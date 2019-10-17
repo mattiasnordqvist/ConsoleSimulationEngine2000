@@ -21,15 +21,15 @@ namespace ConsoleSimulationEngine2000
 
         protected internal override string GetStringToDisplay()
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             sb.AppendLine("#" + "-".PadRight(GetWidth() - 2, '-') + "#");
             var lines = Value.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
             for (int i = 0; i < GetHeight() - 2; i++)
             {
                 if (lines.Count() > i)
                 {
-                    var lineLengthDiff = lines[i].Length - Regex.Replace(lines[i], @"("+'\u001b'+@"\[\d\d;2;\d{1,3};\d{1,3};\d{1,3}m)|("+ '\u001b' + @"\[0m)", "").Length;
-                    sb.AppendLine("| " + lines[i].PadRight(GetWidth() - 4+lineLengthDiff).Substring(0, GetWidth() - 4 + lineLengthDiff) + " |");
+                    var lineLengthDiff = lines[i].Length - Regex.Replace(lines[i], @"(" + '\u001b' + @"\[\d\d;2;\d{1,3};\d{1,3};\d{1,3}m)|(" + '\u001b' + @"\[0m)", "").Length;
+                    sb.AppendLine("| " + lines[i].PadRight(GetWidth() - 4 + lineLengthDiff).Substring(0, GetWidth() - 4 + lineLengthDiff) + " |");
                 }
                 else
                 {

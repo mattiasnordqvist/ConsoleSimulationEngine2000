@@ -20,7 +20,6 @@ namespace ConsoleSimulationEngine2000
 
         public void Log(string message)
         {
-           
             lines.Add(message);
             lines = lines.Skip(lines.Count - LogSize).ToList();
             var sb = new StringBuilder();
