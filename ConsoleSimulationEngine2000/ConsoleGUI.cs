@@ -45,7 +45,7 @@ namespace ConsoleSimulationEngine2000
                     if (delta > TargetUpdateTime)
                     {
                         var u1 = DateTime.UtcNow;
-                        simulation.PassTime(delta);
+                        simulation.Update(delta);
                         LastUpdateTime = (u1 - DateTime.UtcNow);
                         delta = 0;
                     }

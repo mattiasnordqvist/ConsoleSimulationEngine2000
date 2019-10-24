@@ -14,6 +14,6 @@ namespace ConsoleSimulationEngine2000
         /// Advances simulation state by deltaTime
         /// </summary>
         /// <param name="deltaTime">The number of milliseconds that have passed since last time time passed</param>
-        public abstract void PassTime(int deltaTime);
+        public abstract void Update(int deltaTime);
     }
 }

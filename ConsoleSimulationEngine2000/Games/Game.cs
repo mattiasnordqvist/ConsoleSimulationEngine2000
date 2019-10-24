@@ -21,7 +21,7 @@ namespace ConsoleSimulationEngine2000.Games
             CurrentScene = scene;
         }
 
-        public override void PassTime(int deltaTime)
+        public override void Update(int deltaTime)
         {
             CurrentScene?.PassTime(deltaTime);
 

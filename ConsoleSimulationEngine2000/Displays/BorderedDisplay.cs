@@ -5,8 +5,11 @@ using System.Text.RegularExpressions;
 
 namespace ConsoleSimulationEngine2000
 {
-    public class BorderedDisplay : BasicDisplay
+    public class BorderedDisplay : BaseDisplay
     {
+        private static string regexColorStart = @"(" + '\u001b' + @"\[\d\d;2;\d{1,3};\d{1,3};\d{1,3}m)";
+        private static string regexColorEnd = @"(" + '\u001b' + @"\[0m)";
+        private static Regex colorRegex = new Regex(regexColorStart + "|" + regexColorEnd, RegexOptions.Compiled);
         /// <summary>
         /// Creates a display to be shown at position (x, y) with the given width and height. 
         /// </summary>
@@ -19,17 +22,34 @@ namespace ConsoleSimulationEngine2000
 
         }
 
+        public string Value
+        {
+            set
+            {
+                if (value.Contains(Environment.NewLine))
+                {
+                    throw new InvalidOperationException("Value can't contain newlines. Use the Lines property instead to set lines individually.");
+                }
+                else
+                {
+                    Lines = new string[1] { value };
+                }
+            }
+        }
+        public string[] Lines { get; set; } = new string[0];
+
         protected internal override string GetStringToDisplay()
         {
+            
             var sb = new StringBuilder();
             sb.AppendLine("#" + "-".PadRight(GetWidth() - 2, '-') + "#");
-            var lines = Value.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+            
             for (int i = 0; i < GetHeight() - 2; i++)
             {
-                if (lines.Count() > i)
+                if (Lines.Count() > i)
                 {
-                    var lineLengthDiff = lines[i].Length - Regex.Replace(lines[i], @"(" + '\u001b' + @"\[\d\d;2;\d{1,3};\d{1,3};\d{1,3}m)|(" + '\u001b' + @"\[0m)", "").Length;
-                    sb.AppendLine("| " + lines[i].PadRight(GetWidth() - 4 + lineLengthDiff).Substring(0, GetWidth() - 4 + lineLengthDiff) + " |");
+                    var lineLengthDiff = Lines[i].Length - colorRegex.Replace(Lines[i], "").Length;
+                    sb.AppendLine("| " + Lines[i].PadRight(GetWidth() - 4 + lineLengthDiff).Substring(0, GetWidth() - 4 + lineLengthDiff) + " |");
                 }
                 else
                 {

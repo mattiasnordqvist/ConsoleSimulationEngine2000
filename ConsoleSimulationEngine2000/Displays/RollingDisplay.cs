@@ -22,16 +22,7 @@ namespace ConsoleSimulationEngine2000
         {
             lines.Add(message);
             lines = lines.Skip(lines.Count - LogSize).ToList();
-            var sb = new StringBuilder();
-            var rowNumber = 0;
-            foreach (var item in lines)
-            {
-                sb.AppendLine(item);
-                rowNumber++;
-               
-            }
-            sb.Remove(sb.Length - Environment.NewLine.Length, Environment.NewLine.Length);
-            Value = sb.ToString();
+            Lines = lines.ToArray();
         }
 
         private int LogSize => GetHeight() - 2;
