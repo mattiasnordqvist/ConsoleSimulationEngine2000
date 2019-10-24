@@ -42,7 +42,7 @@ public class MySimulation : Simulation
         this.gui = gui;
         this.input = input;
     }
-    public override void PassTime(int deltaTime)
+    public override void Update(int deltaTime)
     {
         log.Log($"{deltaTime} milliseconds has passed");
         clockDisplay.Value = DateTime.Now.ToString("HH:mm:ss");
