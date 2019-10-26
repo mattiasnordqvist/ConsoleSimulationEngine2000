@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace ConsoleSimulationEngine2000
 {
@@ -9,7 +10,7 @@ namespace ConsoleSimulationEngine2000
     /// <param name="y">The y position of the display. Negative values are interpreted as from bottom of window</param>
     /// <param name="width">Width of display. Negative values means width should be subtracted from Window width.</param>
     /// <param name="height">Height of display. Negative values means width should be subtracted from Window height.</param>
-    public abstract class BaseDisplay
+    public abstract class BaseDisplay : IDisplay
     {
         public BaseDisplay() { }
         public BaseDisplay(int x, int y, int width, int height)
@@ -33,81 +34,11 @@ namespace ConsoleSimulationEngine2000
         public int Width { get; set; }
         public int Height { get; set; }
 
-        internal CharMatrix GetCharMatrix()
-        {
-            var w = GetWidth();
-            var h = GetHeight();
-            var m = new (char c, string pre, string post)[h][];
-
-            var lines = GetStringToDisplay().Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
-            for (int y = 0; y < m.Length; y++)
-            {
-                m[y] = new (char c, string pre, string post)[w];
-            }
-            var inColor = false;
-            var colorStart = -1;
-            string pre = null;
-            string post = null;
-            var colorEnding = false;
-            for (int y = 0; y < lines.Length; y++)
-            {
-                var skipped = 0;
-                for (int x = 0; x < w && x + skipped < lines[y].Length;)
-                {
-                    var c = lines[y][x + skipped];
-                    if (!inColor)
-                    {
-                        if (c == '\u001b')
-                        {
-                            inColor = true;
-                            if (colorStart == -1)
-                            {
-                                colorStart = x + skipped;
-                                skipped += 6;
-                            }
-                            else
-                            {
-                                colorEnding = true;
-                                skipped += 2;
-                                colorStart = -1;
-                            }
-                            skipped++;
-                        }
-                        else
-                        {
-                            m[y][x] = (c, pre, post);
-                            x++;
-                        }
-                    }
-                    else
-                    {
-                        if (c == 'm')
-                        {
-                            if (colorStart > -1)
-                            {
-                                pre = lines[y][colorStart..(x + skipped + 1)];
-                                post = '\u001b' + "[0m";
-                            }
-                            if (colorEnding)
-                            {
-                                pre = null;
-                                post = null;
-                                colorEnding = false;
-                            }
-
-                            inColor = false;
-                        }
-                        skipped++;
-                    }
-                }
-            }
-
-            return new CharMatrix(m, GetX(), GetY(), w, h);
-        }
+        public virtual ICharMatrix GetCharMatrix() => CharMatrix.Create(GetStringToDisplay(), GetX(), GetY(), GetWidth(), GetHeight());
 
         protected internal abstract string GetStringToDisplay();
 
-        internal virtual int GetX()
+        public virtual int GetX()
         {
             if (X < 0)
             {
@@ -119,7 +50,7 @@ namespace ConsoleSimulationEngine2000
             }
         }
 
-        internal virtual int GetY()
+        public virtual int GetY()
         {
             if (Y < 0)
             {
@@ -131,7 +62,7 @@ namespace ConsoleSimulationEngine2000
             }
         }
 
-        internal virtual int GetWidth()
+        public virtual int GetWidth()
         {
             if (Width < 0)
             {
@@ -143,7 +74,7 @@ namespace ConsoleSimulationEngine2000
             }
         }
 
-        internal virtual int GetHeight()
+        public virtual int GetHeight()
         {
             if (Height < 0)
             {

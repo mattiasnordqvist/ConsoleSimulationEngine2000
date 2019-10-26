@@ -19,7 +19,7 @@ namespace ConsoleSimulationEngine2000
             string text = input.CurrentInput.Pastel(Color.White);
             if (input.Suggestion != null)
             {
-                    text = input.CurrentInput.Pastel(Color.White) + input.Suggestion.Substring(input.CurrentInput.Length);
+                text = input.CurrentInput.Pastel(Color.White) + input.Suggestion.Substring(input.CurrentInput.Length);
             }
 
             return "> " + text + "_" + "".PadRight(Console.WindowWidth);

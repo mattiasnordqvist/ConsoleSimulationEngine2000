@@ -6,7 +6,7 @@ namespace ConsoleSimulationEngine2000.Games
     {
         private readonly ConsoleGUI gui;
 
-        public override List<BaseDisplay> Displays { get { return CurrentScene.Displays; } }
+        public override List<IDisplay> Displays { get { return CurrentScene.Displays; } }
 
         public Game(ConsoleGUI gui)
         {
@@ -23,7 +23,7 @@ namespace ConsoleSimulationEngine2000.Games
 
         public override void Update(int deltaTime)
         {
-            CurrentScene?.PassTime(deltaTime);
+            CurrentScene?.Update(deltaTime);
 
         }
     }

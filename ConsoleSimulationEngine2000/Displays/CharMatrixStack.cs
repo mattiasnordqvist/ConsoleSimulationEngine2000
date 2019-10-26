@@ -1,22 +1,31 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace ConsoleSimulationEngine2000
 {
-    internal class CharMatrixStack
+    public class CharMatrixStack : ICharMatrix
     {
-        private List<CharMatrix> stack;
+        private List<ICharMatrix> stack;
+
+        public int y => stack.Min(x => x.y);
+
+        public int h => stack.Max(x => x.y+x.h)-y;
+
+        public int x => stack.Min(x => x.x);
+
+        public int w => stack.Max(x => x.x + x.w) - x;
 
         public CharMatrixStack(int size)
         {
-            stack = new List<CharMatrix>(size);
+            stack = new List<ICharMatrix>(size);
         }
-        internal void Add(CharMatrix cm)
+        internal void Add(ICharMatrix cm)
         {
             stack.Add(cm);
         }
 
-        internal (char c, string pre, string post) this[int x, int y]
+        public (char c, string pre, string post) this[int x, int y]
         {
             get
             {
@@ -27,8 +36,8 @@ namespace ConsoleSimulationEngine2000
                     {
                         if (x >= s.x && x < s.x + s.w)
                         {
-                            var c = s.m[y - s.y][x - s.x];
-                            if (c.Item1 != '\0')
+                            var c = s[x - s.x, y - s.y];
+                            if (c.Item1 != '\0' && c.Item1 != ' ')
                             {
                                 return c;
                             }
@@ -53,7 +62,7 @@ namespace ConsoleSimulationEngine2000
                     }
                     else if (a.post != null)
                     {
-                        sb.Append(a.c+ a.post);
+                        sb.Append(a.c + a.post);
                     }
                     else if (a.pre != null)
                     {

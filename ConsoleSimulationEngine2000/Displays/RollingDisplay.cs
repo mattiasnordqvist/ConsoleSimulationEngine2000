@@ -20,9 +20,19 @@ namespace ConsoleSimulationEngine2000
 
         public void Log(string message)
         {
-            lines.Add(message);
+            var messageLines = message.Split(new string[] { Environment.NewLine, "\n" }, StringSplitOptions.None);
+            lines.AddRange(messageLines);
             lines = lines.Skip(lines.Count - LogSize).ToList();
-            Lines = lines.ToArray();
+            var sb = new StringBuilder();
+            var rowNumber = 0;
+            foreach (var item in lines)
+            {
+                sb.AppendLine(item);
+                rowNumber++;
+
+            }
+            sb.Remove(sb.Length - Environment.NewLine.Length, Environment.NewLine.Length);
+            Value = sb.ToString();
         }
 
         private int LogSize => GetHeight() - 2;

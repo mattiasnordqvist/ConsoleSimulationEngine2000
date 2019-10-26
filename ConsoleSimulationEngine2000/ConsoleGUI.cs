@@ -93,5 +93,10 @@ namespace ConsoleSimulationEngine2000
             BackBufferRenderTime = ms2 - ms1;
             ScreenRenderTime = ms3 - ms2;
         }
+
+        public DebugDisplay CreateDisplay(int x, int y)
+        {
+            return new DebugDisplay(this, x, y, 20, 5);
+        }
     }
 }
