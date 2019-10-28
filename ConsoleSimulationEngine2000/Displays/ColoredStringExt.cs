@@ -7,7 +7,7 @@ namespace ConsoleSimulationEngine2000
         public static IEnumerable<(char c, string pre, string post)> EnumerateWithColorInfo(this string @this, int length)
         {
             int skipped = 0;
-            char c = '\0';
+            char c = ' ';
             string pre = null;
             string post = null;
             int x = 0;
@@ -24,7 +24,7 @@ namespace ConsoleSimulationEngine2000
                     skipped++;
                     pre = @this[start..(x + skipped)];
                 }
-                c = x + skipped < @this.Length ? @this[x + skipped] : '\0';
+                c = x + skipped < @this.Length ? @this[x + skipped] : ' ';
                 if (x + skipped + 4 < @this.Length && @this[x + skipped + 1] == '\u001b' && @this[x + skipped + 4] == 'm')
                 {
                     post = "\u001b[0m";
@@ -35,7 +35,7 @@ namespace ConsoleSimulationEngine2000
             }
             for (; x < length; x++)
             {
-                yield return ('\0', null, null);
+                yield return (' ', null, null);
             }
         }
     }

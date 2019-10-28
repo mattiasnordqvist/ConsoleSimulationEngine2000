@@ -19,7 +19,17 @@ namespace ConsoleSimulationEngine2000
             this.h = h;
         }
 
-        public (char c, string pre, string post) this[int x, int y] => m[y][x];
+        public (char c, string pre, string post) this[int x, int y]
+        {
+            get
+            {
+                if (x < this.x || x > this.x + w || y < this.y || y > this.y + h)
+                {
+                    throw new IndexOutOfRangeException();
+                }
+                return m[y-this.y][x-this.x];
+            }
+        }
 
 
         public static CharMatrix Create(string s, int x, int y, int w, int h)
@@ -30,9 +40,14 @@ namespace ConsoleSimulationEngine2000
             for (int yi = 0; yi < m.Length; yi++)
             {
                 m[yi] = new (char c, string pre, string post)[w];
+                for (int xi = 0; xi < w; xi++)
+                {
+                    m[yi][xi].c = ' ';
+                }
             }
 
             string currentColor = null;
+
             for (int yi = 0; yi < lines.Length; yi++)
             {
                 int xi = 0;
@@ -48,7 +63,7 @@ namespace ConsoleSimulationEngine2000
                     {
                         m[yi][xi].post = "\u001b[0m";
                     }
-                    if(c.post != null)
+                    if (c.post != null)
                     {
                         currentColor = null;
                     }
@@ -56,6 +71,7 @@ namespace ConsoleSimulationEngine2000
 
                 }
             }
+
 
             return new CharMatrix(m, x, y, w, h);
         }

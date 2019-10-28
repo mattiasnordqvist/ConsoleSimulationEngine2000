@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -10,7 +11,7 @@ namespace ConsoleSimulationEngine2000
 
         public int y => stack.Min(x => x.y);
 
-        public int h => stack.Max(x => x.y+x.h)-y;
+        public int h => stack.Max(x => x.y + x.h) - y;
 
         public int x => stack.Min(x => x.x);
 
@@ -29,6 +30,10 @@ namespace ConsoleSimulationEngine2000
         {
             get
             {
+                if (x < this.x || x > this.x + w || y < this.y || y > this.y + h)
+                {
+                    throw new IndexOutOfRangeException();
+                }
                 for (int l = 1; l <= stack.Count; l++)
                 {
                     var s = stack[^l];
@@ -36,8 +41,8 @@ namespace ConsoleSimulationEngine2000
                     {
                         if (x >= s.x && x < s.x + s.w)
                         {
-                            var c = s[x - s.x, y - s.y];
-                            if (c.Item1 != '\0' && c.Item1 != ' ')
+                            var c = s[x, y];
+                            if (c.Item1 != '\0')
                             {
                                 return c;
                             }

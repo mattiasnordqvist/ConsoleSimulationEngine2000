@@ -7,11 +7,6 @@ namespace ConsoleSimulationEngine2000
 {
     public class BorderedDisplay : BaseDisplay
     {
-        private static string regexColorStart = @"(" + '\u001b' + @"\[\d\d;2;\d{1,3};\d{1,3};\d{1,3}m)";
-        private static string regexColorEnd = @"(" + '\u001b' + @"\[0m)";
-        private static Regex colorRegex = new Regex(regexColorStart + "|" + regexColorEnd, RegexOptions.Compiled);
-        private string[] lines = new string[0];
-
         /// <summary>
         /// Creates a display to be shown at position (x, y) with the given width and height. 
         /// </summary>
@@ -42,7 +37,6 @@ namespace ConsoleSimulationEngine2000
         {
             var sb = new StringBuilder();
             sb.AppendLine("#" + "-".PadRight(GetWidth() - 2, '-') + "#");
-            var lines = Value.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
             for (int i = 0; i < GetHeight() - 2; i++)
             {
                 sb.AppendLine("| " + "".PadRight(GetWidth() - 4).Substring(0, GetWidth() - 4) + " |");

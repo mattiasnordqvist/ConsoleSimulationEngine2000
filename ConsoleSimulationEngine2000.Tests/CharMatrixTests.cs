@@ -36,7 +36,7 @@ namespace ConsoleSimulationEngine2000.Tests
             Assert.AreEqual(null, cm[0, 0].pre);
             Assert.AreEqual(null, cm[0, 0].post);
 
-            Assert.AreEqual('\0', cm[1, 0].c);
+            Assert.AreEqual(' ', cm[1, 0].c);
             Assert.AreEqual(null, cm[1, 0].pre);
             Assert.AreEqual(null, cm[1, 0].post);
         }
@@ -55,15 +55,15 @@ namespace ConsoleSimulationEngine2000.Tests
             Assert.AreEqual(null, cm[0, 0].pre);
             Assert.AreEqual(null, cm[0, 0].post);
 
-            Assert.AreEqual('\0', cm[1, 0].c);
+            Assert.AreEqual(' ', cm[1, 0].c);
             Assert.AreEqual(null, cm[1, 0].pre);
             Assert.AreEqual(null, cm[1, 0].post);
 
-            Assert.AreEqual('\0', cm[0, 1].c);
+            Assert.AreEqual(' ', cm[0, 1].c);
             Assert.AreEqual(null, cm[0, 1].pre);
             Assert.AreEqual(null, cm[0, 1].post);
 
-            Assert.AreEqual('\0', cm[1, 1].c);
+            Assert.AreEqual(' ', cm[1, 1].c);
             Assert.AreEqual(null, cm[1, 1].pre);
             Assert.AreEqual(null, cm[1, 1].post);
         }
@@ -82,15 +82,15 @@ namespace ConsoleSimulationEngine2000.Tests
             Assert.AreEqual("\u001b[38;2;255;0;0m", cm[0, 0].pre);
             Assert.AreEqual("\u001b[0m", cm[0, 0].post);
 
-            Assert.AreEqual('\0', cm[1, 0].c);
+            Assert.AreEqual(' ', cm[1, 0].c);
             Assert.AreEqual(null, cm[1, 0].pre);
             Assert.AreEqual(null, cm[1, 0].post);
 
-            Assert.AreEqual('\0', cm[0, 1].c);
+            Assert.AreEqual(' ', cm[0, 1].c);
             Assert.AreEqual(null, cm[0, 1].pre);
             Assert.AreEqual(null, cm[0, 1].post);
 
-            Assert.AreEqual('\0', cm[1, 1].c);
+            Assert.AreEqual(' ', cm[1, 1].c);
             Assert.AreEqual(null, cm[1, 1].pre);
             Assert.AreEqual(null, cm[1, 1].post);
         }
@@ -168,6 +168,71 @@ namespace ConsoleSimulationEngine2000.Tests
             Assert.AreEqual('!', actual[1, 0].c);
             Assert.AreEqual("\u001b[38;2;255;0;0m", actual[1, 0].pre);
             Assert.AreEqual("\u001b[0m", actual[1, 0].post);
+        }
+
+        [Test]
+        public void Test8()
+        {
+            var actual = CharMatrix.Create("!".Pastel(Color.Red), 0, 0, 2, 1);
+            Assert.AreEqual('!', actual[0, 0].c);
+            Assert.AreEqual("\u001b[38;2;255;0;0m", actual[0, 0].pre);
+            Assert.AreEqual("\u001b[0m", actual[0, 0].post);
+
+            Assert.AreEqual(' ', actual[1, 0].c);
+            Assert.AreEqual(null, actual[1, 0].pre);
+            Assert.AreEqual(null, actual[1, 0].post);
+        }
+
+        [Test]
+        public void Test9()
+        {
+            var actual = CharMatrix.Create($"1{Environment.NewLine}2".Pastel(Color.Red) ,0,0,1,2);
+
+            Assert.AreEqual('1', actual[0,0].c);
+            Assert.AreEqual("\u001b[38;2;255;0;0m", actual[0, 0].pre);
+            Assert.AreEqual("\u001b[0m", actual[0, 0].post);
+
+            Assert.AreEqual('2', actual[0,1].c);
+            Assert.AreEqual("\u001b[38;2;255;0;0m", actual[0, 1].pre);
+            Assert.AreEqual("\u001b[0m", actual[0, 1].post);
+        }
+
+        [Test]
+        public void Test10()
+        {
+            var actual = CharMatrix.Create($"1{Environment.NewLine}2".Pastel(Color.Red), 0, 0, 2, 2);
+
+            Assert.AreEqual('1', actual[0, 0].c);
+            Assert.AreEqual("\u001b[38;2;255;0;0m", actual[0, 0].pre);
+            Assert.AreEqual(null, actual[0, 0].post);
+
+            Assert.AreEqual(' ', actual[1, 0].c);
+            Assert.AreEqual("\u001b[38;2;255;0;0m", actual[1, 0].pre);
+            Assert.AreEqual("\u001b[0m", actual[1, 0].post);
+
+            Assert.AreEqual('2', actual[0, 1].c);
+            Assert.AreEqual("\u001b[38;2;255;0;0m", actual[0, 1].pre);
+            Assert.AreEqual("\u001b[0m", actual[0, 1].post);
+
+            Assert.AreEqual(' ', actual[1, 1].c);
+            Assert.AreEqual(null, actual[1, 1].pre);
+            Assert.AreEqual(null, actual[1, 1].post);
+
+        }
+
+        [Test]
+        public void Test11()
+        {
+            var cm = CharMatrix.Create("!", 1, 1, 1, 1);
+
+            Assert.AreEqual(cm.x, 1);
+            Assert.AreEqual(cm.y, 1);
+            Assert.AreEqual(cm.w, 1);
+            Assert.AreEqual(cm.h, 1);
+
+            Assert.AreEqual('!', cm[1, 1].c);
+            Assert.AreEqual(null, cm[1, 1].pre);
+            Assert.AreEqual(null, cm[1, 1].post);
         }
     }
 }
