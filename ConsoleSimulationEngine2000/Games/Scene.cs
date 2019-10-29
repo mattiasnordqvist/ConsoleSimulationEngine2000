@@ -5,7 +5,7 @@ namespace ConsoleSimulationEngine2000.Games
     public abstract class Scene
     {
         public Game Game { get; private set; }
-        public List<BaseDisplay> Displays { get; set; } = new List<BaseDisplay>();
+        public List<IDisplay> Displays { get; set; } = new List<IDisplay>();
         public IInput Input { get; set; } = new KeyInput();
 
         internal void SetGame(Game game)
@@ -13,6 +13,6 @@ namespace ConsoleSimulationEngine2000.Games
             Game = game;
         }
 
-        protected internal abstract void PassTime(int deltaTime);
+        protected internal abstract void Update(int deltaTime);
     }
 }

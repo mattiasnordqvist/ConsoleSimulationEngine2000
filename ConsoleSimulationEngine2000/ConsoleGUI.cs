@@ -69,10 +69,10 @@ namespace ConsoleSimulationEngine2000
         private void Render(Simulation simulation)
         {
             var ms1 = DateTime.UtcNow;
-            (char c, string pre, string post)[][] c = new (char, string, string)[Console.WindowHeight][];
+            (char c, string pre)[][] c = new (char, string)[Console.WindowHeight][];
             for (int i = 0; i < c.Length; i++)
             {
-                c[i] = new (char, string, string)[Console.WindowWidth];
+                c[i] = new (char, string)[Console.WindowWidth];
             }
             var displays = simulation.Displays;
             CharMatrixStack cms = new CharMatrixStack(displays.Count + 1);
@@ -92,6 +92,11 @@ namespace ConsoleSimulationEngine2000
 
             BackBufferRenderTime = ms2 - ms1;
             ScreenRenderTime = ms3 - ms2;
+        }
+
+        public DebugDisplay CreateDisplay(int x, int y)
+        {
+            return new DebugDisplay(this, x, y, 20, 5);
         }
     }
 }

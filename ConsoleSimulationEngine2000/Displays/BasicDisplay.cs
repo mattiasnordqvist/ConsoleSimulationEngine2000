@@ -6,9 +6,6 @@
         {
         }
 
-        /// <summary>
-        /// The text to display.
-        /// </summary>
         public string Value { get; set; } = "";
 
         protected internal override string GetStringToDisplay()

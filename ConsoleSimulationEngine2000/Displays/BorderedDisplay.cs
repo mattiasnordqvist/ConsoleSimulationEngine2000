@@ -7,11 +7,6 @@ namespace ConsoleSimulationEngine2000
 {
     public class BorderedDisplay : BaseDisplay
     {
-        private static string regexColorStart = @"(" + '\u001b' + @"\[\d\d;2;\d{1,3};\d{1,3};\d{1,3}m)";
-        private static string regexColorEnd = @"(" + '\u001b' + @"\[0m)";
-        private static Regex colorRegex = new Regex(regexColorStart + "|" + regexColorEnd, RegexOptions.Compiled);
-        private string[] lines = new string[0];
-
         /// <summary>
         /// Creates a display to be shown at position (x, y) with the given width and height. 
         /// </summary>
@@ -24,52 +19,31 @@ namespace ConsoleSimulationEngine2000
 
         }
 
-        public string Value
+        public string Value { get; set; } = "";
+
+        public override ICharMatrix GetCharMatrix()
         {
-            set
-            {
-                if (value.Contains(Environment.NewLine) || value.Contains('\n') || value.Contains('\r'))
-                {
-                    throw new InvalidOperationException("Value can't contain newlines. Use the Lines property instead to set lines individually.");
-                }
-                else
-                {
-                    Lines = new string[1] { value };
-                }
-            }
-        }
-        public string[] Lines
-        {
-            get => lines; 
-            set
-            {
-                if(value.Any(v => v.Contains(Environment.NewLine) || v.Contains('\n') || v.Contains('\r')))
-                {
-                    throw new InvalidOperationException("Lines can't contain newlines. Add one line at a time to the Lines property.");
-                }
-                lines = value;
-            }
+            var ms = new CharMatrixStack(2);
+            ms.Add(CharMatrix.Create(GetFrame(), GetX(), GetY(), GetWidth(), GetHeight()));
+            ms.Add(CharMatrix.Create(GetStringToDisplay(), GetX() + 1, GetY() + 1, GetWidth() - 2, GetHeight() - 2));
+            return ms;
         }
         protected internal override string GetStringToDisplay()
         {
+            return Value;
+        }
 
+        private string GetFrame()
+        {
             var sb = new StringBuilder();
             sb.AppendLine("#" + "-".PadRight(GetWidth() - 2, '-') + "#");
-
             for (int i = 0; i < GetHeight() - 2; i++)
             {
-                if (Lines.Count() > i)
-                {
-                    var lineLengthDiff = Lines[i].Length - colorRegex.Replace(Lines[i], "").Length;
-                    sb.AppendLine("| " + Lines[i].PadRight(GetWidth() - 4 + lineLengthDiff).Substring(0, GetWidth() - 4 + lineLengthDiff) + " |");
-                }
-                else
-                {
-                    sb.AppendLine("| " + "".PadRight(GetWidth() - 4).Substring(0, GetWidth() - 4) + " |");
-                }
+                sb.AppendLine("| " + "".PadRight(GetWidth() - 4).Substring(0, GetWidth() - 4) + " |");
             }
             sb.Append("#" + "-".PadRight(GetWidth() - 2, '-') + "#");
             return sb.ToString();
         }
+        
     }
 }

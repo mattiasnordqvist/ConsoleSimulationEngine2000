@@ -8,7 +8,7 @@ namespace ConsoleSimulationEngine2000
         /// <summary>
         /// Returns the displays to be printed in Console
         /// </summary>
-        public abstract List<BaseDisplay> Displays { get; }
+        public abstract List<IDisplay> Displays { get; }
 
         /// <summary>
         /// Advances simulation state by deltaTime
