@@ -1,12 +1,14 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
+﻿using System.Text;
 
 namespace ConsoleSimulationEngine2000
 {
     public class BorderedDisplay : BaseDisplay
     {
+        private string value = "";
+        private CharMatrixStack cached;
+        protected bool UseCache = true;
+        private (string frame, int w, int h)? _cachedFrame;
+
         /// <summary>
         /// Creates a display to be shown at position (x, y) with the given width and height. 
         /// </summary>
@@ -19,31 +21,46 @@ namespace ConsoleSimulationEngine2000
 
         }
 
-        public string Value { get; set; } = "";
-
+        public string Value
+        {
+            get { return value; }
+            set
+            {
+                cached = null;
+                this.value = value;
+            }
+        }
         public override ICharMatrix GetCharMatrix()
         {
-            var ms = new CharMatrixStack(2);
-            ms.Add(CharMatrix.Create(GetFrame(), GetX(), GetY(), GetWidth(), GetHeight()));
-            ms.Add(CharMatrix.Create(GetStringToDisplay(), GetX() + 1, GetY() + 1, GetWidth() - 2, GetHeight() - 2));
-            return ms;
+            if (!UseCache || cached == null)
+            {
+                var ms = new CharMatrixStack(2);
+                ms.Add(CharMatrix.Create(GetFrame(GetWidth(), GetHeight()), GetX(), GetY(), GetWidth(), GetHeight()));
+                ms.Add(CharMatrix.Create(GetStringToDisplay(), GetX() + 1, GetY() + 1, GetWidth() - 2, GetHeight() - 2));
+                cached = ms;
+            }
+            return cached;
         }
         protected internal override string GetStringToDisplay()
         {
             return Value;
         }
 
-        private string GetFrame()
+        private string GetFrame(int w, int h)
         {
-            var sb = new StringBuilder();
-            sb.AppendLine("#" + "-".PadRight(GetWidth() - 2, '-') + "#");
-            for (int i = 0; i < GetHeight() - 2; i++)
+            if (_cachedFrame == null || _cachedFrame.Value.w != w || _cachedFrame.Value.h != h)
             {
-                sb.AppendLine("| " + "".PadRight(GetWidth() - 4).Substring(0, GetWidth() - 4) + " |");
+                var sb = new StringBuilder();
+                sb.AppendLine("#" + "-".PadRight(w - 2, '-') + "#");
+                for (int i = 0; i < h - 2; i++)
+                {
+                    sb.AppendLine("| " + "".PadRight(w - 4).Substring(0, w - 4) + " |");
+                }
+                sb.Append("#" + "-".PadRight(w - 2, '-') + "#");
+                _cachedFrame = (sb.ToString(), w, h);
             }
-            sb.Append("#" + "-".PadRight(GetWidth() - 2, '-') + "#");
-            return sb.ToString();
+            return _cachedFrame.Value.frame;
         }
-        
+
     }
 }

@@ -17,8 +17,10 @@ namespace ConsoleSimulationEngine2000
         }
 
         private bool started;
-        public int TargetRenderTime { get; set; } = 20;
-        public int TargetUpdateTime { get; set; } = 1000;
+        private (CharMatrix clean, int w, int h)? _cleanCache;
+
+        public int TargetRenderTime { get; set; } = 50;
+        public int TargetUpdateTime { get; set; } = 200;
 
         /// <summary>
         /// Starts a simulation
@@ -35,28 +37,30 @@ namespace ConsoleSimulationEngine2000
 
             await Task.Run(async () =>
             {
-                int delta = 0;
+                int delta = 0, updateDelta = 0;
+                var s1 = DateTime.UtcNow;
+                simulation.Update(delta);
+
                 while (true)
                 {
-                    var s1 = DateTime.UtcNow;
-                    await Task.Delay(TargetRenderTime);
-                    var s2 = DateTime.UtcNow;
-                    delta += (s2 - s1).Milliseconds;
-                    if (delta > TargetUpdateTime)
-                    {
-                        var u1 = DateTime.UtcNow;
-                        simulation.Update(delta);
-                        LastUpdateTime = (u1 - DateTime.UtcNow);
-                        delta = 0;
-                    }
-                    
+                    delta = (DateTime.UtcNow - s1).Milliseconds;
+                    updateDelta += delta;
+                    s1 = DateTime.UtcNow;
                     while (Input != null && Console.KeyAvailable)
                     {
                         ConsoleKeyInfo key = Console.ReadKey(true);
                         Input.KeyInputted(key);
                     }
-
+                    if (updateDelta >= TargetUpdateTime)
+                    {
+                        var u1 = DateTime.UtcNow;
+                        LastUpdateDelta = updateDelta;
+                        simulation.Update(updateDelta);
+                        LastUpdateTime = u1 - DateTime.UtcNow;
+                        updateDelta -= TargetUpdateTime;
+                    }
                     Render(simulation);
+                    await Task.Delay(Math.Max(0, TargetRenderTime - delta));
                 }
             });
         }
@@ -64,39 +68,53 @@ namespace ConsoleSimulationEngine2000
         public TimeSpan BackBufferRenderTime { get; private set; }
         public TimeSpan ScreenRenderTime { get; private set; }
         public TimeSpan LastUpdateTime { get; private set; }
+        public int LastUpdateDelta { get; private set; }
         public IInput Input { get; set; }
 
         private void Render(Simulation simulation)
         {
             var ms1 = DateTime.UtcNow;
-            (char c, string pre)[][] c = new (char, string)[Console.WindowHeight][];
-            for (int i = 0; i < c.Length; i++)
-            {
-                c[i] = new (char, string)[Console.WindowWidth];
-            }
+
+            CharMatrix cm = Clean(Console.WindowWidth, Console.WindowHeight);
+
+
             var displays = simulation.Displays;
             CharMatrixStack cms = new CharMatrixStack(displays.Count + 1);
-            CharMatrix cm = new CharMatrix(c, 0, 0, Console.WindowWidth, Console.WindowHeight);
             cms.Add(cm);
             foreach (var display in displays)
             {
                 cms.Add(display.GetCharMatrix());
             }
 
+            var s = cms.ToString(Console.WindowWidth, Console.WindowHeight);
             var ms2 = DateTime.UtcNow;
 
             Console.SetCursorPosition(0, 0);
             Console.CursorVisible = false;
-            Console.Write(cms.ToString(Console.WindowWidth, Console.WindowHeight));
+            Console.Out.Write(s);
             var ms3 = DateTime.UtcNow;
 
             BackBufferRenderTime = ms2 - ms1;
             ScreenRenderTime = ms3 - ms2;
         }
 
+        private CharMatrix Clean(int w, int h)
+        {
+            if (_cleanCache == null || _cleanCache.Value.w != w || _cleanCache.Value.h != h)
+            {
+                (char c, string pre)[][] c = new (char, string)[h][];
+                for (int i = 0; i < c.Length; i++)
+                {
+                    c[i] = new (char, string)[w];
+                }
+                _cleanCache = (new CharMatrix(c, 0, 0, w, h), w, h);
+            }
+            return _cleanCache.Value.clean;
+        }
+
         public DebugDisplay CreateDisplay(int x, int y)
         {
-            return new DebugDisplay(this, x, y, 20, 5);
+            return new DebugDisplay(this, x, y);
         }
     }
 }
