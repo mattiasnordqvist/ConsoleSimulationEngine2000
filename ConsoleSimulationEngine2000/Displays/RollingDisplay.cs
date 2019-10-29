@@ -18,10 +18,9 @@ namespace ConsoleSimulationEngine2000
         {
         }
 
-        public void Log(string message)
+        public void LogSingleLine(string message)
         {
-            var messageLines = message.Split(new string[] { Environment.NewLine, "\n" }, StringSplitOptions.None);
-            lines.AddRange(messageLines);
+            lines.Add(message);
             lines = lines.Skip(lines.Count - LogSize).ToList();
             var sb = new StringBuilder();
             var rowNumber = 0;
