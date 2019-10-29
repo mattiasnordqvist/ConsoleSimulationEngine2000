@@ -12,49 +12,36 @@ Create a .Net Core 3 Console App. Smack this into your Main method:
 ```csharp
 var input = new TextInput();
 var gui = new ConsoleGUI() { Input = input };
-var sim = new MySimulation(gui, input);
+var sim = new MySimulation(input, gui.CreateDisplay(4, 4));
 await gui.Start(sim);
 ```
 
 `MySimulation` is a type inheriting from `ConsoleSimulationEngine2000.Simulation`. It could look like this:
 
 ```csharp
-public class MySimulation : Simulation
-{
-    private RollingDisplay log = new RollingDisplay(0, 0, -1, 12);
-    private BorderedDisplay clockDisplay = new BorderedDisplay(0, 11, 20, 3) { };
-    private BorderedDisplay updateDisplay = new BorderedDisplay(0, 14, 20, 3) { };
-    private BorderedDisplay renderDisplay = new BorderedDisplay(0, 17, 20, 3) { };
-    private BorderedDisplay printDisplay = new BorderedDisplay(0, 20, 20, 3) { };
-    private readonly ConsoleGUI gui;
-    private readonly TextInput input;
-
-    public override List<BaseDisplay> Displays => new List<BaseDisplay>() {
-        log, 
-        clockDisplay,
-        updateDisplay,
-        renderDisplay,
-        printDisplay,
-        input.CreateDisplay(0, -3, -1) };
-
-    public MySimulation(ConsoleGUI gui, TextInput input)
+    public class MySimulation : Simulation
     {
-        this.gui = gui;
-        this.input = input;
-    }
-    public override void Update(int deltaTime)
-    {
-        log.Log($"{deltaTime} milliseconds has passed");
-        clockDisplay.Value = DateTime.Now.ToString("HH:mm:ss");
-        updateDisplay.Value = "Update: "+gui.LastUpdateTime.Milliseconds;
-        renderDisplay.Value = "Render: "+gui.BackBufferRenderTime.Milliseconds;
-        printDisplay.Value = "Print: "+gui.ScreenRenderTime.Milliseconds;
-        while (input.HasInput)
+        private RollingDisplay log = new RollingDisplay(0, 0, -1, 13);
+        private BorderedDisplay clockDisplay = new BorderedDisplay(0, 12, 20, 3) { };
+        private readonly TextInput input;
+        private readonly DebugDisplay debug;
+
+        public override List<IDisplay> Displays => new List<IDisplay>() { log, debug, input.CreateDisplay(0, -3, -1) };
+        public MySimulation(TextInput input, DebugDisplay debug)
         {
-            log.Log("Input: " + input.Consume());
+            this.input = input;
+            this.debug = debug;
+        }
+        public override void Update(int deltaTime)
+        {
+            log.LogSingleLine($"{deltaTime} milliseconds has passed and everything is fine!".Pastel(Color.MediumVioletRed));
+            clockDisplay.Value = DateTime.Now.ToString("HH:mm:ss");
+            while (input.HasInput)
+            {
+                log.LogSingleLine("Input: " + input.Consume());
+            }
         }
     }
-}
 ```
 `Display`s are used to render things on screen. All `Display`s listed in the `Displays` property will be rendered every second.
 `Input` (from base class) can be used to query input. It also has a list of words available for auto-completion.
