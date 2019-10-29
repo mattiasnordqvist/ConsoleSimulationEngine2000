@@ -7,6 +7,6 @@
         int x { get; }
         int w { get; }
 
-        (char c, string pre, string post) this[int x, int y] { get; }
+        (char c, string pre) this[int x, int y] { get; }
     }
 }

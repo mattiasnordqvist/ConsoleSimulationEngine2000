@@ -26,7 +26,7 @@ namespace ConsoleSimulationEngine2000
             stack.Add(cm);
         }
 
-        public (char c, string pre, string post) this[int x, int y]
+        public (char c, string pre) this[int x, int y]
         {
             get
             {
@@ -49,7 +49,7 @@ namespace ConsoleSimulationEngine2000
                         }
                     }
                 }
-                return (' ', null, null);
+                return (' ', null);
             }
         }
 
@@ -61,22 +61,7 @@ namespace ConsoleSimulationEngine2000
                 for (int x = 0; x < windowWidth; x++)
                 {
                     var a = this[x, y];
-                    if (a.pre != null && a.post != null)
-                    {
-                        sb.Append(a.pre + a.c + a.post);
-                    }
-                    else if (a.post != null)
-                    {
-                        sb.Append(a.c + a.post);
-                    }
-                    else if (a.pre != null)
-                    {
-                        sb.Append(a.pre + a.c);
-                    }
-                    else
-                    {
-                        sb.Append(a.c);
-                    }
+                    sb.Append(a.pre + a.c);
 
                 }
                 if (y != windowHeight - 1)
@@ -85,12 +70,12 @@ namespace ConsoleSimulationEngine2000
             return sb.ToString();
         }
 
-        internal (char, string, string)[][] ToArray(int windowWidth, int windowHeight)
+        internal (char, string)[][] ToArray(int windowWidth, int windowHeight)
         {
-            var a = new (char, string, string)[windowHeight][];
+            var a = new (char, string)[windowHeight][];
             for (int y = 0; y < windowHeight; y++)
             {
-                a[y] = new (char, string, string)[windowWidth];
+                a[y] = new (char, string)[windowWidth];
                 for (int x = 0; x < windowWidth; x++)
                 {
                     a[y][x] = this[x, y];

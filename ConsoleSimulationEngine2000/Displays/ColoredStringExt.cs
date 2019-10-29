@@ -4,18 +4,23 @@ namespace ConsoleSimulationEngine2000
 {
     public static class ColoredStringExt
     {
-        public static IEnumerable<(char c, string pre, string post)> EnumerateWithColorInfo(this string @this, int length)
+        public static char BeginAnsi = '\u001b';
+        public static string End = "\u001b[0m";
+        public static IEnumerable<(char c, string pre)> EnumerateWithColorInfo(this string @this)
         {
-            bool empty = false;
             int skipped = 0;
-            char c = ' ';
-            string pre = null;
-            string post = null;
+            string pre = End;
             int x = 0;
-            for (; x + skipped < @this.Length && x < length; x++)
+            for (; x + skipped < @this.Length; x++)
             {
-                empty = false;
-                if (x + skipped < @this.Length && @this[x + skipped] == '\u001b')
+                if (x + skipped + 3 < @this.Length && @this[x + skipped] == BeginAnsi && @this[x + skipped + 3] == 'm')
+                {
+                    skipped += 4;
+                    var c = CurrentChar();
+                    if (c == BeginAnsi) { x--; continue; }
+                    yield return (c, pre = End);
+                }
+                else if (x + skipped < @this.Length && @this[x + skipped] == BeginAnsi)
                 {
                     int start = x + skipped;
                     skipped += 10;
@@ -24,27 +29,18 @@ namespace ConsoleSimulationEngine2000
                         skipped++;
                     }
                     skipped++;
-                    pre = @this[start..(x + skipped)];
+                    var c = CurrentChar();
+                    if (c == BeginAnsi) { x--; continue; }
+                    yield return (c, pre = @this[start..(x + skipped)]);
                 }
-                c = x + skipped < @this.Length ? @this[x + skipped] : ' ';
-                if (c == '\u001b' && @this[x + skipped + 3] == 'm')
+                else
                 {
-                    empty = true;
-                    skipped += 3;
+                    var c = CurrentChar();
+                    yield return (c, pre);
                 }
-                if (x + skipped + 4 < @this.Length && @this[x + skipped + 1] == '\u001b' && @this[x + skipped + 4] == 'm')
-                {
-                    post = "\u001b[0m";
-                    skipped += 4;
-                }
-                if (!empty)
-                { yield return (c, pre, post); }
-                if (post != null || empty) { post = null; pre = null; }
             }
-            for (; x < length; x++)
-            {
-                yield return (' ', null, null);
-            }
+            
+            char CurrentChar() => x + skipped < @this.Length ? @this[x + skipped] : BeginAnsi;
         }
     }
 }
