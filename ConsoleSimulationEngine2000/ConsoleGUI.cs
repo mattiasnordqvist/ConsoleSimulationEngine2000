@@ -41,20 +41,22 @@ namespace ConsoleSimulationEngine2000
             await Task.Run(async () =>
             {
                 stopWatch.Start();
-                int delta = 0, updateDelta = 0;
+                int delta = 0, updateDelta = 0, renderDelta = 0;
                 var s1 = stopWatch.ElapsedMilliseconds;
-                simulation.Update(delta);
-
+                simulation.Update(updateDelta);
+                Render(simulation);
                 while (true)
                 {
                     delta = (int)(stopWatch.ElapsedMilliseconds - s1);
                     updateDelta += delta;
+                    renderDelta += delta;
                     s1 = stopWatch.ElapsedMilliseconds;
                     while (Input != null && Console.KeyAvailable)
                     {
                         var key = Console.ReadKey(true);
                         Input.KeyInputted(key);
                     }
+
                     if (updateDelta >= TargetUpdateTime)
                     {
                         var u1 = stopWatch.ElapsedMilliseconds;
@@ -62,22 +64,31 @@ namespace ConsoleSimulationEngine2000
                         simulation.Update(updateDelta);
                         LastUpdateTime = (int)(u1 - stopWatch.ElapsedMilliseconds);
                         updateDelta -= TargetUpdateTime;
+                        UpdateLag = updateDelta > TargetUpdateTime;
                     }
-                    Render(simulation);
-                    await Task.Delay(Math.Max(0, TargetRenderTime - delta));
+
+                    if(renderDelta >= TargetRenderTime)
+                    {
+                        Render(simulation);
+                        renderDelta -= TargetRenderTime;
+                        RenderLag = renderDelta > TargetRenderTime;
+                    }
+
+                    var timeTaken = (int)stopWatch.ElapsedMilliseconds - (int)s1;
+                    await Task.Delay(Math.Max(0, Math.Min(TargetUpdateTime - (delta + timeTaken), TargetRenderTime - (delta + timeTaken))));
                 }
             });
         }
 
         public int BackBufferRenderTime { get; private set; }
-        public int ScreenRenderTime { get; private set; }
         public int LastUpdateTime { get; private set; }
         public int LastUpdateDelta { get; private set; }
         public IInput Input { get; set; }
+        public bool RenderLag { get; private set; }
+        public bool UpdateLag { get; private set; }
 
         Task currentPrintTask = null;
         string nextPrint = null;
-        Task nextPrintTask = null;
         private void Render(Simulation simulation)
         {
             var ms1 = stopWatch.ElapsedMilliseconds;
@@ -101,10 +112,8 @@ namespace ConsoleSimulationEngine2000
             {
                 nextPrint = s;
             }
-            var ms3 = stopWatch.ElapsedMilliseconds;
 
             BackBufferRenderTime = (int)(ms2 - ms1);
-            ScreenRenderTime = (int)(ms3 - ms2);
 
             Task Print(string s)
             {

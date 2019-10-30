@@ -11,19 +11,17 @@ namespace ConsoleSimulationEngine2000
         private readonly int averageSampleSize;
 
         public DebugDisplay(ConsoleGUI consoleGUI, int x, int y, int averageSampleSize = 100)
-            : base(x, y, 20, 7)
+            : base(x, y, 20, 5)
         {
             gui = consoleGUI;
             this.averageSampleSize = averageSampleSize;
             l = new double[averageSampleSize];
             b = new double[averageSampleSize];
-            s = new double[averageSampleSize];
             msFromTargetUpdate = new double[averageSampleSize];
             UseCache = false;
         }
         private double[] l;
         private double[] b;
-        private double[] s;
         private double[] msFromTargetUpdate;
         private int count = 0;
         private int index = 0;
@@ -32,7 +30,6 @@ namespace ConsoleSimulationEngine2000
         {
             l[index] = gui.LastUpdateTime;
             b[index] = gui.BackBufferRenderTime;
-            s[index] = gui.ScreenRenderTime;
             msFromTargetUpdate[index] = gui.LastUpdateDelta - gui.TargetUpdateTime;
             count++;
             index++;
@@ -45,11 +42,9 @@ namespace ConsoleSimulationEngine2000
                 index = 0;
             }
             Value =
-                ($"Update: {Math.Round(l.Sum() / count)} {Environment.NewLine}" +
+                ($"Update: {Math.Round(l.Sum() / count)} {(gui.UpdateLag ? "(LAG)" : "")}{Environment.NewLine}" +
                 $"Update diff: {Math.Round(msFromTargetUpdate.Sum() / count)} {Environment.NewLine}" +
-                $"Backbuffer: {Math.Round(b.Sum() / count)} {Environment.NewLine}" +
-                $"Print: {Math.Round(s.Sum() / count)} {Environment.NewLine}" +
-                $"Render total: {Math.Round((s.Sum() + b.Sum()) / count)}").Pastel(Color.Goldenrod);
+                $"Render: {Math.Round(b.Sum() / count)} {(gui.RenderLag ? "(LAG)" : "")}").Pastel(Color.Goldenrod);
         }
     }
 }
