@@ -18,8 +18,7 @@ namespace ConsoleSimulationEngine2000.Tests
             Assert.AreEqual(cms.W, 1);
             Assert.AreEqual(cms.H, 1);
 
-            Assert.AreEqual('!', cms[0, 0].c);
-            Assert.AreEqual(ColoredStringExt.End, cms[0, 0].pre);
+            Assert.AreEqual(ColoredStringExt.End + '!', cms[0, 0]);
         }
 
         [Test]
@@ -35,8 +34,7 @@ namespace ConsoleSimulationEngine2000.Tests
             Assert.AreEqual(cms.W, 1);
             Assert.AreEqual(cms.H, 1);
 
-            Assert.AreEqual('?', cms[0, 0].c);
-            Assert.AreEqual(ColoredStringExt.End, cms[0, 0].pre);
+            Assert.AreEqual(ColoredStringExt.End + '?', cms[0, 0]);
         }
 
         [Test]
@@ -52,10 +50,8 @@ namespace ConsoleSimulationEngine2000.Tests
             Assert.AreEqual(cms.W, 2);
             Assert.AreEqual(cms.H, 1);
 
-            Assert.AreEqual('?', cms[0, 0].c);
-            Assert.AreEqual(ColoredStringExt.End, cms[0, 0].pre);
-            Assert.AreEqual('!', cms[1, 0].c);
-            Assert.AreEqual(ColoredStringExt.End, cms[1, 0].pre);
+            Assert.AreEqual(ColoredStringExt.End + '?', cms[0, 0]);
+            Assert.AreEqual(ColoredStringExt.End + '!', cms[1, 0]);
         }
 
         [Test]
@@ -71,12 +67,9 @@ namespace ConsoleSimulationEngine2000.Tests
             Assert.AreEqual(cms.W, 3);
             Assert.AreEqual(cms.H, 1);
 
-            Assert.AreEqual('!', cms[0, 0].c);
-            Assert.AreEqual(ColoredStringExt.End, cms[0, 0].pre);
-            Assert.AreEqual('?', cms[1, 0].c);
-            Assert.AreEqual(ColoredStringExt.End, cms[1, 0].pre);
-            Assert.AreEqual('!', cms[2, 0].c);
-            Assert.AreEqual(ColoredStringExt.End, cms[2, 0].pre);
+            Assert.AreEqual(ColoredStringExt.End + '!', cms[0, 0]);
+            Assert.AreEqual(ColoredStringExt.End + '?', cms[1, 0]);
+            Assert.AreEqual(ColoredStringExt.End + '!', cms[2, 0]);
         }
 
         [Test]
@@ -92,12 +85,9 @@ namespace ConsoleSimulationEngine2000.Tests
             Assert.AreEqual(cms.W, 3);
             Assert.AreEqual(cms.H, 1);
 
-            Assert.AreEqual('!', cms[0, 0].c);
-            Assert.AreEqual(EnumerateWithColorInfoTests.BeginRed, cms[0, 0].pre);
-            Assert.AreEqual('?', cms[1, 0].c);
-            Assert.AreEqual(EnumerateWithColorInfoTests.BeginGreen, cms[1, 0].pre);
-            Assert.AreEqual('!', cms[2, 0].c);
-            Assert.AreEqual(EnumerateWithColorInfoTests.BeginRed, cms[2, 0].pre);
+            Assert.AreEqual(EnumerateWithColorInfoTests.BeginRed + '!', cms[0, 0]);
+            Assert.AreEqual(EnumerateWithColorInfoTests.BeginGreen + '?', cms[1, 0]);
+            Assert.AreEqual(EnumerateWithColorInfoTests.BeginRed + '!', cms[2, 0]);
         }
 
         [Test]
@@ -113,19 +103,13 @@ namespace ConsoleSimulationEngine2000.Tests
             Assert.AreEqual(cms.W, 3);
             Assert.AreEqual(cms.H, 2);
 
-            Assert.AreEqual('!', cms[0, 0].c);
-            Assert.AreEqual(EnumerateWithColorInfoTests.BeginRed, cms[0, 0].pre);
-            Assert.AreEqual('?', cms[1, 0].c);
-            Assert.AreEqual(EnumerateWithColorInfoTests.BeginGreen, cms[1, 0].pre);
-            Assert.AreEqual('!', cms[2, 0].c);
-            Assert.AreEqual(EnumerateWithColorInfoTests.BeginRed, cms[2, 0].pre);
+            Assert.AreEqual(EnumerateWithColorInfoTests.BeginRed + '!', cms[0, 0]);
+            Assert.AreEqual(EnumerateWithColorInfoTests.BeginGreen + '?', cms[1, 0]);
+            Assert.AreEqual(EnumerateWithColorInfoTests.BeginRed + '!', cms[2, 0]);
 
-            Assert.AreEqual('!', cms[0, 1].c);
-            Assert.AreEqual(EnumerateWithColorInfoTests.BeginRed, cms[0, 1].pre);
-            Assert.AreEqual('?', cms[1, 1].c);
-            Assert.AreEqual(EnumerateWithColorInfoTests.BeginGreen, cms[1, 1].pre);
-            Assert.AreEqual('!', cms[2, 1].c);
-            Assert.AreEqual(EnumerateWithColorInfoTests.BeginRed, cms[2, 1].pre);
+            Assert.AreEqual(EnumerateWithColorInfoTests.BeginRed + '!', cms[0, 1]);
+            Assert.AreEqual(EnumerateWithColorInfoTests.BeginGreen + '?', cms[1, 1]);
+            Assert.AreEqual(EnumerateWithColorInfoTests.BeginRed + '!', cms[2, 1]);
         }
 
         [Test]
@@ -141,32 +125,20 @@ namespace ConsoleSimulationEngine2000.Tests
             Assert.AreEqual(cms.W, 4);
             Assert.AreEqual(cms.H, 3);
 
-            Assert.AreEqual('#', cms[0, 0].c);
-            Assert.AreEqual(ColoredStringExt.End, cms[0, 0].pre);
-            Assert.AreEqual('#', cms[1, 0].c);
-            Assert.AreEqual(ColoredStringExt.End, cms[1, 0].pre);
-            Assert.AreEqual('#', cms[2, 0].c);
-            Assert.AreEqual(ColoredStringExt.End, cms[2, 0].pre);
-            Assert.AreEqual('#', cms[3, 0].c);
-            Assert.AreEqual(ColoredStringExt.End, cms[3, 0].pre);
+            Assert.AreEqual(ColoredStringExt.End + '#', cms[0, 0]);
+            Assert.AreEqual(ColoredStringExt.End + '#', cms[1, 0]);
+            Assert.AreEqual(ColoredStringExt.End + '#', cms[2, 0]);
+            Assert.AreEqual(ColoredStringExt.End + '#', cms[3, 0]);
 
-            Assert.AreEqual('#', cms[0, 1].c);
-            Assert.AreEqual(ColoredStringExt.End, cms[0, 1].pre);
-            Assert.AreEqual('?', cms[1, 1].c);
-            Assert.AreEqual(EnumerateWithColorInfoTests.BeginGreen, cms[1, 1].pre);
-            Assert.AreEqual(' ', cms[2, 1].c);
-            Assert.AreEqual(ColoredStringExt.End, cms[2, 1].pre);
-            Assert.AreEqual('#', cms[3, 1].c);
-            Assert.AreEqual(ColoredStringExt.End, cms[3, 1].pre);
+            Assert.AreEqual(ColoredStringExt.End + '#', cms[0, 1]);
+            Assert.AreEqual(EnumerateWithColorInfoTests.BeginGreen + '?', cms[1, 1]);
+            Assert.AreEqual(ColoredStringExt.End + ' ', cms[2, 1]);
+            Assert.AreEqual(ColoredStringExt.End + '#', cms[3, 1]);
 
-            Assert.AreEqual('#', cms[0, 2].c);
-            Assert.AreEqual(ColoredStringExt.End, cms[0, 2].pre);
-            Assert.AreEqual('#', cms[1, 2].c);
-            Assert.AreEqual(ColoredStringExt.End, cms[1, 2].pre);
-            Assert.AreEqual('#', cms[2, 2].c);
-            Assert.AreEqual(ColoredStringExt.End, cms[2, 2].pre);
-            Assert.AreEqual('#', cms[3, 2].c);
-            Assert.AreEqual(ColoredStringExt.End, cms[3, 2].pre);
+            Assert.AreEqual(ColoredStringExt.End + '#', cms[0, 2]);
+            Assert.AreEqual(ColoredStringExt.End + '#', cms[1, 2]);
+            Assert.AreEqual(ColoredStringExt.End + '#', cms[2, 2]);
+            Assert.AreEqual(ColoredStringExt.End + '#', cms[3, 2]);
         }
     }
 }

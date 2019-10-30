@@ -26,7 +26,7 @@ namespace ConsoleSimulationEngine2000
             stack.Add(cm);
         }
 
-        public (char c, string pre) this[int x, int y]
+        public string this[int x, int y]
         {
             get
             {
@@ -38,14 +38,14 @@ namespace ConsoleSimulationEngine2000
                         if (x >= s.X && x < s.X + s.W)
                         {
                             var c = s[x, y];
-                            if (c.Item1 != '\0')
+                            if (!(c == null || c.EndsWith('\0')))
                             {
                                 return c;
                             }
                         }
                     }
                 }
-                return (' ', null);
+                return "\u001b[0m ";
             }
         }
 
@@ -57,7 +57,7 @@ namespace ConsoleSimulationEngine2000
                 for (int x = 0; x < windowWidth; x++)
                 {
                     var a = this[x, y];
-                    sb.Append(a.pre + a.c);
+                    sb.Append(a);
 
                 }
                 if (y != windowHeight - 1)

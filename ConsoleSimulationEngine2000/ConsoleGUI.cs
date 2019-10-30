@@ -75,6 +75,9 @@ namespace ConsoleSimulationEngine2000
         public int LastUpdateDelta { get; private set; }
         public IInput Input { get; set; }
 
+        Task currentPrintTask = null;
+        string nextPrint = null;
+        Task nextPrintTask = null;
         private void Render(Simulation simulation)
         {
             var ms1 = stopWatch.ElapsedMilliseconds;
@@ -90,25 +93,40 @@ namespace ConsoleSimulationEngine2000
 
             var s = cms.ToString(Console.WindowWidth, Console.WindowHeight);
             var ms2 = stopWatch.ElapsedMilliseconds;
-
-
-            Console.SetCursorPosition(0, 0);
-            Console.CursorVisible = false;
-            Console.Out.Write(s);
+            if (currentPrintTask == null)
+            {
+                currentPrintTask = Print(s);
+            }
+            else
+            {
+                nextPrint = s;
+            }
             var ms3 = stopWatch.ElapsedMilliseconds;
 
             BackBufferRenderTime = (int)(ms2 - ms1);
             ScreenRenderTime = (int)(ms3 - ms2);
+
+            Task Print(string s)
+            {
+                return Task.Run(() =>
+                {
+                    Console.SetCursorPosition(0, 0);
+                    Console.CursorVisible = false;
+                    Console.Out.WriteAsync(s);
+                    currentPrintTask = Print(nextPrint);
+                    nextPrint = null;
+                });
+            }
         }
 
         private CharMatrix Clean(int w, int h)
         {
             if (_cleanCache == null || _cleanCache.Value.w != w || _cleanCache.Value.h != h)
             {
-                (char c, string pre)[][] c = new (char, string)[h][];
+                string[][] c = new string[h][];
                 for (int i = 0; i < c.Length; i++)
                 {
-                    c[i] = new (char, string)[w];
+                    c[i] = new string[w];
                 }
                 _cleanCache = (new CharMatrix(c, 0, 0, w, h), w, h);
             }

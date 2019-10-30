@@ -6,7 +6,7 @@ namespace ConsoleSimulationEngine2000
     {
         public static char BeginAnsi = '\u001b';
         public static string End = "\u001b[0m";
-        public static IEnumerable<(char c, string pre)> EnumerateWithColorInfo(this string @this)
+        public static IEnumerable<string> EnumerateWithColorInfo(this string @this)
         {
             int skipped = 0;
             string pre = End;
@@ -18,7 +18,8 @@ namespace ConsoleSimulationEngine2000
                     skipped += 4;
                     var c = CurrentChar();
                     if (c == BeginAnsi) { x--; continue; }
-                    yield return (c, pre = End);
+                    pre = End;
+                    yield return pre + c;
                 }
                 else if (x + skipped < @this.Length && @this[x + skipped] == BeginAnsi)
                 {
@@ -31,15 +32,16 @@ namespace ConsoleSimulationEngine2000
                     skipped++;
                     var c = CurrentChar();
                     if (c == BeginAnsi) { x--; continue; }
-                    yield return (c, pre = @this[start..(x + skipped)]);
+                    pre = @this[start..(x + skipped)];
+                    yield return pre + c;
                 }
                 else
                 {
                     var c = CurrentChar();
-                    yield return (c, pre);
+                    yield return pre + c;
                 }
             }
-            
+
             char CurrentChar() => x + skipped < @this.Length ? @this[x + skipped] : BeginAnsi;
         }
     }

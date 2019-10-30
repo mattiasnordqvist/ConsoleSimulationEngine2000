@@ -23,40 +23,31 @@ namespace ConsoleSimulationEngine2000.Tests
         {
             var actual = "!".EnumerateWithColorInfo().ToList();
             Assert.AreEqual(1, actual.Count());
-            Assert.AreEqual('!', actual[0].c);
-            Assert.AreEqual(End, actual[0].pre);
+            Assert.AreEqual(End + '!', actual[0]);
         }
 
         [Test]
         public void Test3()
         {
             var actual = "!".Pastel(Color.Red).EnumerateWithColorInfo().ToList();
-            Assert.AreEqual('!', actual[0].c);
-            Assert.AreEqual(BeginRed, actual[0].pre);
+            Assert.AreEqual(BeginRed + '!', actual[0]);
         }
 
         [Test]
         public void Test4()
         {
             var actual = ("." + "!".Pastel(Color.Red) + ".").EnumerateWithColorInfo().ToList();
-            Assert.AreEqual('.', actual[0].c);
-            Assert.AreEqual(End, actual[0].pre);
-
-            Assert.AreEqual('!', actual[1].c);
-            Assert.AreEqual(BeginRed, actual[1].pre);
-
-            Assert.AreEqual('.', actual[2].c);
-            Assert.AreEqual(End, actual[2].pre);
+            Assert.AreEqual(End + '.', actual[0]);
+            Assert.AreEqual(BeginRed + '!', actual[1]);
+            Assert.AreEqual(End + '.', actual[2]);
         }
 
         [Test]
         public void Test5()
         {
-            var actual = ("!".Pastel(Color.Red)+ "?".Pastel(Color.Green)).EnumerateWithColorInfo().ToList();
-            Assert.AreEqual('!', actual[0].c);
-            Assert.AreEqual(BeginRed, actual[0].pre);
-            Assert.AreEqual('?', actual[1].c);
-            Assert.AreEqual(BeginGreen, actual[1].pre);
+            var actual = ("!".Pastel(Color.Red) + "?".Pastel(Color.Green)).EnumerateWithColorInfo().ToList();
+            Assert.AreEqual(BeginRed + '!', actual[0]);
+            Assert.AreEqual(BeginGreen + '?', actual[1]);
         }
 
         [Test]
@@ -70,11 +61,8 @@ namespace ConsoleSimulationEngine2000.Tests
         public void Test7()
         {
             var actual = "!!".Pastel(Color.Red).EnumerateWithColorInfo().ToList();
-            Assert.AreEqual('!', actual[0].c);
-            Assert.AreEqual(BeginRed, actual[0].pre);
-
-            Assert.AreEqual('!', actual[1].c);
-            Assert.AreEqual(BeginRed, actual[1].pre);
+            Assert.AreEqual(BeginRed + '!', actual[0]);
+            Assert.AreEqual(BeginRed + '!', actual[1]);
         }
 
         [Test]
@@ -82,17 +70,10 @@ namespace ConsoleSimulationEngine2000.Tests
         {
             var actual = $"12{Environment.NewLine}34".Pastel(Color.Red).EnumerateWithColorInfo().ToList();
 
-            Assert.AreEqual('1', actual[0].c);
-            Assert.AreEqual(BeginRed, actual[0].pre);
-
-            Assert.AreEqual('2', actual[1].c);
-            Assert.AreEqual(BeginRed, actual[1].pre);
-
-            Assert.AreEqual('3', actual[4].c);
-            Assert.AreEqual(BeginRed, actual[4].pre);
-
-            Assert.AreEqual('4', actual[5].c);
-            Assert.AreEqual(BeginRed, actual[5].pre);
+            Assert.AreEqual(BeginRed + '1', actual[0]);
+            Assert.AreEqual(BeginRed + '2', actual[1]);
+            Assert.AreEqual(BeginRed + '3', actual[4]);
+            Assert.AreEqual(BeginRed + '4', actual[5]);
         }
 
         [Test]
@@ -100,8 +81,7 @@ namespace ConsoleSimulationEngine2000.Tests
         {
             var actual = $"1".Pastel(Color.Red).EnumerateWithColorInfo().ToList();
 
-            Assert.AreEqual('1', actual[0].c);
-            Assert.AreEqual(BeginRed, actual[0].pre);
+            Assert.AreEqual(BeginRed + '1', actual[0]);
         }
 
         [Test]
@@ -109,17 +89,10 @@ namespace ConsoleSimulationEngine2000.Tests
         {
             var actual = $"1{Environment.NewLine}2".Pastel(Color.Red).EnumerateWithColorInfo().ToList();
 
-            Assert.AreEqual('1', actual[0].c);
-            Assert.AreEqual(BeginRed, actual[0].pre);
-
-            Assert.AreEqual('\r', actual[1].c);
-            Assert.AreEqual(BeginRed, actual[1].pre);
-           
-            Assert.AreEqual('\n', actual[2].c);
-            Assert.AreEqual(BeginRed, actual[2].pre);
-
-            Assert.AreEqual('2', actual[3].c);
-            Assert.AreEqual(BeginRed, actual[3].pre);
+            Assert.AreEqual(BeginRed + '1', actual[0]);
+            Assert.AreEqual(BeginRed + '\r', actual[1]);
+            Assert.AreEqual(BeginRed + '\n', actual[2]);
+            Assert.AreEqual(BeginRed + '2', actual[3]);
         }
 
         [Test]
@@ -131,10 +104,10 @@ namespace ConsoleSimulationEngine2000.Tests
         [Test]
         public void Test12()
         {
-            var actual = ("_"+"".Pastel(Color.Red)+"_").EnumerateWithColorInfo().ToList();
+            var actual = ("_" + "".Pastel(Color.Red) + "_").EnumerateWithColorInfo().ToList();
             Assert.AreEqual(2, actual.Count());
-            Assert.AreEqual('_', actual[0].c);
-            Assert.AreEqual('_', actual[1].c);
+            Assert.AreEqual(End + '_', actual[0]);
+            Assert.AreEqual(End + '_', actual[1]);
         }
     }
 }

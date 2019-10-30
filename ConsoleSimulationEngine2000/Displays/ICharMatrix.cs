@@ -7,6 +7,6 @@
         int X { get; }
         int W { get; }
 
-        (char c, string pre) this[int x, int y] { get; }
+        string this[int x, int y] { get; }
     }
 }

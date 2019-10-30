@@ -2,22 +2,22 @@
 {
     public class CharMatrix : ICharMatrix
     {
-        private (char c, string pre)[][] m;
+        private string[][] m;
         public int X { get; }
         public int Y { get; }
         public int W { get; }
         public int H { get; }
 
-        internal CharMatrix((char c, string pre)[][] m, int x, int y, int w, int h)
+        internal CharMatrix(string[][] m, int x, int y, int w, int h)
         {
             this.m = m;
-            this.X = x;
-            this.Y = y;
-            this.W = w;
-            this.H = h;
+            X = x;
+            Y = y;
+            W = w;
+            H = h;
         }
 
-        public (char c, string pre) this[int x, int y] => m[y - this.Y][x - this.X];
+        public string this[int x, int y] => m[y - Y][x - X];
 
 
         public static CharMatrix Create(string s, int x, int y, int w, int h)
@@ -26,11 +26,11 @@
             int yi = 0, xi = 0;
             foreach (var c in s.EnumerateWithColorInfo())
             {
-                if (c.c == '\r')
+                if (c.EndsWith('\r'))
                 {
                     continue;
                 }
-                if (c.c == '\n')
+                if (c.EndsWith('\n'))
                 {
                     xi = 0;
                     yi++;
@@ -47,16 +47,16 @@
             return new CharMatrix(m, x, y, w, h);
         }
 
-        private static (char c, string pre)[][] EmptyArray(int w, int h)
+        private static string[][] EmptyArray(int w, int h)
         {
-            var m = new (char c, string pre)[h][];
+            var d = ColoredStringExt.End + ' ';
+            var m = new string[h][];
             for (int yi = 0; yi < m.Length; yi++)
             {
-                m[yi] = new (char c, string pre)[w];
+                m[yi] = new string[w];
                 for (int xi = 0; xi < w; xi++)
                 {
-                    m[yi][xi].c = ' ';
-                    m[yi][xi].pre = ColoredStringExt.End;
+                    m[yi][xi] = d;
 
                 }
             }
