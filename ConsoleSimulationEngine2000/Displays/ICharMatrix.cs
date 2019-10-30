@@ -2,10 +2,10 @@
 {
     public interface ICharMatrix
     {
-        int y { get; }
-        int h { get; }
-        int x { get; }
-        int w { get; }
+        int Y { get; }
+        int H { get; }
+        int X { get; }
+        int W { get; }
 
         (char c, string pre) this[int x, int y] { get; }
     }

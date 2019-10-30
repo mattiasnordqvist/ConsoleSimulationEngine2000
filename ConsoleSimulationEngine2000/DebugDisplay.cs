@@ -28,11 +28,11 @@ namespace ConsoleSimulationEngine2000
         private int count = 0;
         private int index = 0;
 
-        protected internal override string GetStringToDisplay()
+        protected internal override void Update()
         {
-            l[index] = gui.LastUpdateTime.TotalMilliseconds;
-            b[index] = gui.BackBufferRenderTime.TotalMilliseconds;
-            s[index] = gui.ScreenRenderTime.TotalMilliseconds;
+            l[index] = gui.LastUpdateTime;
+            b[index] = gui.BackBufferRenderTime;
+            s[index] = gui.ScreenRenderTime;
             msFromTargetUpdate[index] = gui.LastUpdateDelta - gui.TargetUpdateTime;
             count++;
             index++;
@@ -49,9 +49,7 @@ namespace ConsoleSimulationEngine2000
                 $"Update diff: {Math.Round(msFromTargetUpdate.Sum() / count)} {Environment.NewLine}" +
                 $"Backbuffer: {Math.Round(b.Sum() / count)} {Environment.NewLine}" +
                 $"Print: {Math.Round(s.Sum() / count)} {Environment.NewLine}" +
-                $"Render total: {Math.Round((s.Sum()+ b.Sum()) / count)}").Pastel(Color.Goldenrod);
-            return Value;
-
+                $"Render total: {Math.Round((s.Sum() + b.Sum()) / count)}").Pastel(Color.Goldenrod);
         }
     }
 }

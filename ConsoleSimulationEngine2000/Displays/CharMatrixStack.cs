@@ -9,13 +9,13 @@ namespace ConsoleSimulationEngine2000
     {
         private List<ICharMatrix> stack;
 
-        public int y => stack.Min(x => x.y);
+        public int Y => stack.Min(x => x.Y);
 
-        public int h => stack.Max(x => x.y + x.h) - y;
+        public int H => stack.Max(x => x.Y + x.H) - Y;
 
-        public int x => stack.Min(x => x.x);
+        public int X => stack.Min(x => x.X);
 
-        public int w => stack.Max(x => x.x + x.w) - x;
+        public int W => stack.Max(x => x.X + x.W) - X;
 
         public CharMatrixStack(int size)
         {
@@ -30,16 +30,12 @@ namespace ConsoleSimulationEngine2000
         {
             get
             {
-                if (x < this.x || x > this.x + w || y < this.y || y > this.y + h)
+                for (int l = stack.Count - 1; l >= 0; l--)
                 {
-                    throw new IndexOutOfRangeException();
-                }
-                for (int l = 1; l <= stack.Count; l++)
-                {
-                    var s = stack[^l];
-                    if (y >= s.y && y < s.y + s.h)
+                    var s = stack[l];
+                    if (y >= s.Y && y < s.Y + s.H)
                     {
-                        if (x >= s.x && x < s.x + s.w)
+                        if (x >= s.X && x < s.X + s.W)
                         {
                             var c = s[x, y];
                             if (c.Item1 != '\0')
@@ -68,20 +64,6 @@ namespace ConsoleSimulationEngine2000
                 { sb.AppendLine(); }
             }
             return sb.ToString();
-        }
-
-        internal (char, string)[][] ToArray(int windowWidth, int windowHeight)
-        {
-            var a = new (char, string)[windowHeight][];
-            for (int y = 0; y < windowHeight; y++)
-            {
-                a[y] = new (char, string)[windowWidth];
-                for (int x = 0; x < windowWidth; x++)
-                {
-                    a[y][x] = this[x, y];
-                }
-            }
-            return a;
         }
     }
 }

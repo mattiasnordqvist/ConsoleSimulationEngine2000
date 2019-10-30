@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Text;
+using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ConsoleSimulationEngine2000
@@ -21,6 +22,7 @@ namespace ConsoleSimulationEngine2000
 
         public int TargetRenderTime { get; set; } = 50;
         public int TargetUpdateTime { get; set; } = 200;
+        private Stopwatch stopWatch = new Stopwatch();
 
         /// <summary>
         /// Starts a simulation
@@ -29,6 +31,7 @@ namespace ConsoleSimulationEngine2000
         /// <returns></returns>
         public async Task Start(Simulation simulation)
         {
+            Thread.CurrentThread.Priority = ThreadPriority.Highest;
             if (started)
             {
                 throw new InvalidOperationException("Can only run one simulation at a time");
@@ -37,26 +40,27 @@ namespace ConsoleSimulationEngine2000
 
             await Task.Run(async () =>
             {
+                stopWatch.Start();
                 int delta = 0, updateDelta = 0;
-                var s1 = DateTime.UtcNow;
+                var s1 = stopWatch.ElapsedMilliseconds;
                 simulation.Update(delta);
 
                 while (true)
                 {
-                    delta = (DateTime.UtcNow - s1).Milliseconds;
+                    delta = (int)(stopWatch.ElapsedMilliseconds - s1);
                     updateDelta += delta;
-                    s1 = DateTime.UtcNow;
+                    s1 = stopWatch.ElapsedMilliseconds;
                     while (Input != null && Console.KeyAvailable)
                     {
-                        ConsoleKeyInfo key = Console.ReadKey(true);
+                        var key = Console.ReadKey(true);
                         Input.KeyInputted(key);
                     }
                     if (updateDelta >= TargetUpdateTime)
                     {
-                        var u1 = DateTime.UtcNow;
+                        var u1 = stopWatch.ElapsedMilliseconds;
                         LastUpdateDelta = updateDelta;
                         simulation.Update(updateDelta);
-                        LastUpdateTime = u1 - DateTime.UtcNow;
+                        LastUpdateTime = (int)(u1 - stopWatch.ElapsedMilliseconds);
                         updateDelta -= TargetUpdateTime;
                     }
                     Render(simulation);
@@ -65,19 +69,17 @@ namespace ConsoleSimulationEngine2000
             });
         }
 
-        public TimeSpan BackBufferRenderTime { get; private set; }
-        public TimeSpan ScreenRenderTime { get; private set; }
-        public TimeSpan LastUpdateTime { get; private set; }
+        public int BackBufferRenderTime { get; private set; }
+        public int ScreenRenderTime { get; private set; }
+        public int LastUpdateTime { get; private set; }
         public int LastUpdateDelta { get; private set; }
         public IInput Input { get; set; }
 
         private void Render(Simulation simulation)
         {
-            var ms1 = DateTime.UtcNow;
+            var ms1 = stopWatch.ElapsedMilliseconds;
 
             CharMatrix cm = Clean(Console.WindowWidth, Console.WindowHeight);
-
-
             var displays = simulation.Displays;
             CharMatrixStack cms = new CharMatrixStack(displays.Count + 1);
             cms.Add(cm);
@@ -87,15 +89,16 @@ namespace ConsoleSimulationEngine2000
             }
 
             var s = cms.ToString(Console.WindowWidth, Console.WindowHeight);
-            var ms2 = DateTime.UtcNow;
+            var ms2 = stopWatch.ElapsedMilliseconds;
+
 
             Console.SetCursorPosition(0, 0);
             Console.CursorVisible = false;
             Console.Out.Write(s);
-            var ms3 = DateTime.UtcNow;
+            var ms3 = stopWatch.ElapsedMilliseconds;
 
-            BackBufferRenderTime = ms2 - ms1;
-            ScreenRenderTime = ms3 - ms2;
+            BackBufferRenderTime = (int)(ms2 - ms1);
+            ScreenRenderTime = (int)(ms3 - ms2);
         }
 
         private CharMatrix Clean(int w, int h)

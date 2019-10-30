@@ -4,9 +4,7 @@ namespace ConsoleSimulationEngine2000
 {
     public class BorderedDisplay : BaseDisplay
     {
-        private string value = "";
-        private CharMatrixStack cached;
-        protected bool UseCache = true;
+        
         private (string frame, int w, int h)? _cachedFrame;
 
         /// <summary>
@@ -20,30 +18,14 @@ namespace ConsoleSimulationEngine2000
         {
 
         }
+        
 
-        public string Value
+        protected internal override ICharMatrix GetCharMatrix(string value)
         {
-            get { return value; }
-            set
-            {
-                cached = null;
-                this.value = value;
-            }
-        }
-        public override ICharMatrix GetCharMatrix()
-        {
-            if (!UseCache || cached == null)
-            {
-                var ms = new CharMatrixStack(2);
-                ms.Add(CharMatrix.Create(GetFrame(GetWidth(), GetHeight()), GetX(), GetY(), GetWidth(), GetHeight()));
-                ms.Add(CharMatrix.Create(GetStringToDisplay(), GetX() + 1, GetY() + 1, GetWidth() - 2, GetHeight() - 2));
-                cached = ms;
-            }
-            return cached;
-        }
-        protected internal override string GetStringToDisplay()
-        {
-            return Value;
+            var ms = new CharMatrixStack(2);
+            ms.Add(CharMatrix.Create(GetFrame(GetWidth(), GetHeight()), GetX(), GetY(), GetWidth(), GetHeight()));
+            ms.Add(CharMatrix.Create(value, GetX() + 1, GetY() + 1, GetWidth() - 2, GetHeight() - 2));
+            return ms;
         }
 
         private string GetFrame(int w, int h)

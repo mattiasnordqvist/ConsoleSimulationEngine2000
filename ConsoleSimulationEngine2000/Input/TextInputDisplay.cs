@@ -4,7 +4,7 @@ using Pastel;
 
 namespace ConsoleSimulationEngine2000
 {
-    public class TextInputDisplay : BaseDisplay
+    public class TextInputDisplay : BasicDisplay
     {
         private readonly TextInput input;
 
@@ -13,16 +13,15 @@ namespace ConsoleSimulationEngine2000
             this.input = input;
         }
 
-        protected internal override string GetStringToDisplay()
+        protected internal override void Update()
         {
-
             string text = input.CurrentInput.Pastel(Color.White);
             if (input.Suggestion != null)
             {
                 text = input.CurrentInput.Pastel(Color.White) + input.Suggestion.Substring(input.CurrentInput.Length);
             }
 
-            return "> " + text + "_" + "".PadRight(Console.WindowWidth);
+            Value = "> " + text + "_" + "".PadRight(Console.WindowWidth);
         }
     }
 }

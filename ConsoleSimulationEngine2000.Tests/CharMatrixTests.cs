@@ -16,10 +16,10 @@ namespace ConsoleSimulationEngine2000.Tests
         {
             var cm = CharMatrix.Create("!", 0, 0, 1, 1);
 
-            Assert.AreEqual(cm.x, 0);
-            Assert.AreEqual(cm.y, 0);
-            Assert.AreEqual(cm.w, 1);
-            Assert.AreEqual(cm.h, 1);
+            Assert.AreEqual(cm.X, 0);
+            Assert.AreEqual(cm.Y, 0);
+            Assert.AreEqual(cm.W, 1);
+            Assert.AreEqual(cm.H, 1);
 
             Assert.AreEqual('!', cm[0, 0].c);
             Assert.AreEqual(End, cm[0, 0].pre);
@@ -30,10 +30,10 @@ namespace ConsoleSimulationEngine2000.Tests
         {
             var cm = CharMatrix.Create("!", 0, 0, 2, 1);
 
-            Assert.AreEqual(cm.x, 0);
-            Assert.AreEqual(cm.y, 0);
-            Assert.AreEqual(cm.w, 2);
-            Assert.AreEqual(cm.h, 1);
+            Assert.AreEqual(cm.X, 0);
+            Assert.AreEqual(cm.Y, 0);
+            Assert.AreEqual(cm.W, 2);
+            Assert.AreEqual(cm.H, 1);
 
             Assert.AreEqual('!', cm[0, 0].c);
             Assert.AreEqual(End, cm[0, 0].pre);
@@ -47,10 +47,10 @@ namespace ConsoleSimulationEngine2000.Tests
         {
             var cm = CharMatrix.Create("!", 0, 0, 2, 2);
 
-            Assert.AreEqual(cm.x, 0);
-            Assert.AreEqual(cm.y, 0);
-            Assert.AreEqual(cm.w, 2);
-            Assert.AreEqual(cm.h, 2);
+            Assert.AreEqual(cm.X, 0);
+            Assert.AreEqual(cm.Y, 0);
+            Assert.AreEqual(cm.W, 2);
+            Assert.AreEqual(cm.H, 2);
 
             Assert.AreEqual('!', cm[0, 0].c);
             Assert.AreEqual(End, cm[0, 0].pre);
@@ -70,10 +70,10 @@ namespace ConsoleSimulationEngine2000.Tests
         {
             var cm = CharMatrix.Create("!".Pastel(Color.Red), 0, 0, 2, 2);
 
-            Assert.AreEqual(cm.x, 0);
-            Assert.AreEqual(cm.y, 0);
-            Assert.AreEqual(cm.w, 2);
-            Assert.AreEqual(cm.h, 2);
+            Assert.AreEqual(cm.X, 0);
+            Assert.AreEqual(cm.Y, 0);
+            Assert.AreEqual(cm.W, 2);
+            Assert.AreEqual(cm.H, 2);
 
             Assert.AreEqual('!', cm[0, 0].c);
             Assert.AreEqual(BeginRed, cm[0, 0].pre);
@@ -93,10 +93,10 @@ namespace ConsoleSimulationEngine2000.Tests
         {
             var cm = CharMatrix.Create($"12{Environment.NewLine}34".Pastel(Color.Red), 0, 0, 2, 2);
 
-            Assert.AreEqual(cm.x, 0);
-            Assert.AreEqual(cm.y, 0);
-            Assert.AreEqual(cm.w, 2);
-            Assert.AreEqual(cm.h, 2);
+            Assert.AreEqual(cm.X, 0);
+            Assert.AreEqual(cm.Y, 0);
+            Assert.AreEqual(cm.W, 2);
+            Assert.AreEqual(cm.H, 2);
 
             Assert.AreEqual('1', cm[0, 0].c);
             Assert.AreEqual(BeginRed, cm[0, 0].pre);
@@ -116,10 +116,10 @@ namespace ConsoleSimulationEngine2000.Tests
         {
             var cm = CharMatrix.Create("0" + $"12{Environment.NewLine}34".Pastel(Color.Red) + "0", 0, 0, 3, 2);
 
-            Assert.AreEqual(cm.x, 0);
-            Assert.AreEqual(cm.y, 0);
-            Assert.AreEqual(cm.w, 3);
-            Assert.AreEqual(cm.h, 2);
+            Assert.AreEqual(cm.X, 0);
+            Assert.AreEqual(cm.Y, 0);
+            Assert.AreEqual(cm.W, 3);
+            Assert.AreEqual(cm.H, 2);
 
             Assert.AreEqual('0', cm[0, 0].c);
             Assert.AreEqual(End, cm[0, 0].pre);
@@ -198,10 +198,10 @@ namespace ConsoleSimulationEngine2000.Tests
         {
             var cm = CharMatrix.Create("!", 1, 1, 1, 1);
 
-            Assert.AreEqual(cm.x, 1);
-            Assert.AreEqual(cm.y, 1);
-            Assert.AreEqual(cm.w, 1);
-            Assert.AreEqual(cm.h, 1);
+            Assert.AreEqual(cm.X, 1);
+            Assert.AreEqual(cm.Y, 1);
+            Assert.AreEqual(cm.W, 1);
+            Assert.AreEqual(cm.H, 1);
 
             Assert.AreEqual('!', cm[1, 1].c);
             Assert.AreEqual(End, cm[1, 1].pre);

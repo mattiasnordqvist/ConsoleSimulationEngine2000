@@ -1,41 +1,28 @@
-﻿using System;
-using System.Linq;
-
-namespace ConsoleSimulationEngine2000
+﻿namespace ConsoleSimulationEngine2000
 {
     public class CharMatrix : ICharMatrix
     {
         private (char c, string pre)[][] m;
-        public int x { get; }
-        public int y { get; }
-        public int w { get; }
-        public int h { get; }
+        public int X { get; }
+        public int Y { get; }
+        public int W { get; }
+        public int H { get; }
 
         internal CharMatrix((char c, string pre)[][] m, int x, int y, int w, int h)
         {
             this.m = m;
-            this.x = x;
-            this.y = y;
-            this.w = w;
-            this.h = h;
+            this.X = x;
+            this.Y = y;
+            this.W = w;
+            this.H = h;
         }
 
-        public (char c, string pre) this[int x, int y]
-        {
-            get
-            {
-                if (x < this.x || x > this.x + w || y < this.y || y > this.y + h)
-                {
-                    throw new IndexOutOfRangeException();
-                }
-                return m[y-this.y][x-this.x];
-            }
-        }
+        public (char c, string pre) this[int x, int y] => m[y - this.Y][x - this.X];
 
 
         public static CharMatrix Create(string s, int x, int y, int w, int h)
         {
-            var m = EmptyArray(w,h);
+            var m = EmptyArray(w, h);
             int yi = 0, xi = 0;
             foreach (var c in s.EnumerateWithColorInfo())
             {
@@ -49,7 +36,7 @@ namespace ConsoleSimulationEngine2000
                     yi++;
                     continue;
                 }
-                if(yi>=m.Length || xi >= m[yi].Length)
+                if (yi >= m.Length || xi >= m[yi].Length)
                 {
                     xi++;
                     continue;
@@ -57,7 +44,6 @@ namespace ConsoleSimulationEngine2000
                 m[yi][xi] = c;
                 xi++;
             }
-
             return new CharMatrix(m, x, y, w, h);
         }
 

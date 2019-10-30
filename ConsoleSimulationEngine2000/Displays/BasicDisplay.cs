@@ -6,11 +6,10 @@
         {
         }
 
-        public string Value { get; set; } = "";
-
-        protected internal override string GetStringToDisplay()
+        protected internal override ICharMatrix GetCharMatrix(string value)
         {
-            return Value.Trim();
+            return CharMatrix.Create(Value.Trim(), GetX(), GetY(), GetWidth(), GetHeight());
+
         }
     }
 }

@@ -12,6 +12,10 @@ namespace ConsoleSimulationEngine2000
     /// <param name="height">Height of display. Negative values means width should be subtracted from Window height.</param>
     public abstract class BaseDisplay : IDisplay
     {
+        private string value = "";
+        private ICharMatrix cached;
+        protected bool UseCache = true;
+
         public BaseDisplay() { }
         public BaseDisplay(int x, int y, int width, int height)
         {
@@ -34,9 +38,31 @@ namespace ConsoleSimulationEngine2000
         public int Width { get; set; }
         public int Height { get; set; }
 
-        public virtual ICharMatrix GetCharMatrix() => CharMatrix.Create(GetStringToDisplay(), GetX(), GetY(), GetWidth(), GetHeight());
+        public ICharMatrix GetCharMatrix()
+        {
+            Update();
+            if (!UseCache || cached == null)
+            {
+                cached = GetCharMatrix(Value);
+            }
+            return cached;
+        }
 
-        protected internal abstract string GetStringToDisplay();
+        protected internal virtual void Update()
+        {
+        }
+
+        protected internal abstract ICharMatrix GetCharMatrix(string value);
+
+        public string Value
+        {
+            get { return value; }
+            set
+            {
+                cached = null;
+                this.value = value;
+            }
+        }
 
         public virtual int GetX()
         {
